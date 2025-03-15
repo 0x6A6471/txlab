@@ -1,0 +1,8 @@
+open React
+
+let[@react.component] make () =
+  let url = ReasonReactRouter.useUrl () in
+  match url.path with
+  | [] -> <h1>(string "Home")</h1>
+  | _ -> <h1>(string "404")</h1>
+;;

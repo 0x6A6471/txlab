@@ -27,6 +27,7 @@
 (package
  (name bitcoin-lib)
  (synopsis "A short synopsis")
+ (allow_empty)
  (description "A longer description")
  (depends
    ocaml dune melange reason-react

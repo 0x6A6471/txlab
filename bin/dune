@@ -1,4 +1,0 @@
-(executable
- (public_name bitcoin-lib)
- (name main)
- (libraries bitcoin_lib))
