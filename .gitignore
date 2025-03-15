@@ -42,5 +42,3 @@ styles/output.css
 
 # OCaml lock files and package metadata
 dev-tools.locks/
-*.pkg
-*.dune
