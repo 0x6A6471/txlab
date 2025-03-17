@@ -30,4 +30,3 @@
  ; Change to (module_systems es6 commonjs) if you want to generate both
  ; https://melange.re/v2.0.0/build-system/#commonjs-or-es6-modules
  (module_systems es6))
-

@@ -34,7 +34,7 @@
    ;; mlx
    mlx ocamlmerlin-mlx
    ;; dev tools
-   ocamlformat ocaml-lsp-server)
+   ocamlformat-mlx ocamlformat ocamlformat-rpc ocaml-lsp-server)
  (tags (bitcoin)))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
