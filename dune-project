@@ -1,11 +1,11 @@
 (lang dune 3.18)
 
-(name bitcoin-lib)
+(name cipher)
 
-; (generate_opam_files true)
+(generate_opam_files true)
 
 (source
- (github 0x6a6471/bitcoin-lib))
+ (github 0x6a6471/cipher))
 
 (authors "0x6a6471")
 
@@ -25,7 +25,7 @@
 ; (license LICENSE)
 
 (package
- (name bitcoin-lib)
+ (name cipher)
  (synopsis "A short synopsis")
  (allow_empty)
  (description "A longer description")
