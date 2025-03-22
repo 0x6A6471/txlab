@@ -7,6 +7,7 @@ let[@react.component] make () =
   let hex, set_hex = useState (fun _ -> "") in
   let outputs, set_outputs = useState (fun _ : t -> [||]) in
   let handle_input_change event =
+    set_outputs (fun _ -> [||]);
     let value = (Event.Form.target event)##value in
     set_hex (fun _ -> value)
   in
@@ -32,6 +33,9 @@ let[@react.component] make () =
       </div>
       <button type_="submit">(string "Submit")</button>
     </form>
-    <pre>(string (Js.Json.stringifyWithSpace (Obj.magic outputs) 2))</pre>
+    (match outputs with
+     | [||] -> null
+     | _ ->
+       <pre>(string (Js.Json.stringifyWithSpace (Obj.magic outputs) 2))</pre>)
   </main>
 ;;
