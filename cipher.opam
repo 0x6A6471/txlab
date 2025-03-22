@@ -12,6 +12,7 @@ depends: [
   "dune" {>= "3.18"}
   "melange"
   "reason-react"
+  "melange-bitcoin-lib"
   "mlx"
   "ocamlmerlin-mlx"
   "ocamlformat-mlx"

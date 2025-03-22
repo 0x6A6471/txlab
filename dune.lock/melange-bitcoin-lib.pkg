@@ -1,0 +1,11 @@
+(version dev)
+
+(dune)
+
+(depends ocaml dune melange ocamlformat ocaml-lsp-server)
+
+(source
+ (fetch
+  (url git+https://github.com/0x6A6471/melange-bitcoin-lib)))
+
+(dev)

@@ -1,11 +1,18 @@
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import react from "@vitejs/plugin-react";
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 export default {
   build: {
     outDir: "./dist",
   },
-  plugins: [react(), nodeResolve()],
+  plugins: [
+    react(),
+    nodeResolve(),
+    nodePolyfills({
+      include: ['buffer']
+    }),
+  ],
   server: {
     watch: {
       // ignore parts of _build that don't include output JS
@@ -19,8 +26,8 @@ export default {
         "**/_build/**/*.mli",
         "**/_build/**/.*",
         "**/_build/**/_*", // ignore internal build directories starting with _
-        // still watchthe output JS files
-        "!**/_build/default/src/output/src/**/*.js"  // don't ignore these specific JS files
+        // don't ignore these specific JS files
+        "!**/_build/default/src/output/src/**/*.js"
       ],
     },
   },

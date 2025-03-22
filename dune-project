@@ -13,6 +13,11 @@
 
 (using melange 0.1)
 
+; bitcoin-lib
+(pin
+ (url "git+https://github.com/0x6A6471/melange-bitcoin-lib")
+ (package (name melange-bitcoin-lib)))
+
 ; mlx files
 (dialect
  (name mlx)
@@ -30,7 +35,7 @@
  (allow_empty)
  (description "A longer description")
  (depends
-   ocaml dune melange reason-react
+   ocaml dune melange reason-react melange-bitcoin-lib
    ;; mlx
    mlx ocamlmerlin-mlx
    ;; dev tools
