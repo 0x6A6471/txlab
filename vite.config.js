@@ -1,6 +1,7 @@
-import { nodeResolve } from "@rollup/plugin-node-resolve";
 import react from "@vitejs/plugin-react";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import tailwindcss from '@tailwindcss/vite'
 
 export default {
   build: {
@@ -8,6 +9,7 @@ export default {
   },
   plugins: [
     react(),
+    tailwindcss(),
     nodeResolve(),
     nodePolyfills({
       include: ['buffer']
