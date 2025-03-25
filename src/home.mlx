@@ -17,7 +17,7 @@ let[@react.component] make () =
     let outputs = Psbt.getTxOutputs psbt in
     set_outputs (fun _ -> outputs)
   in
-  <main className="max-w-screen-lg mx-auto p-4">
+  <main>
     <form onSubmit=handle_submit>
       <div>
         <label htmlFor="hex">(string "tx hex")</label>
@@ -26,10 +26,10 @@ let[@react.component] make () =
                     name="hex"
                     type_="text"
                     autoFocus=true
-                    cols=80
                     rows=10
-                    className="outline-0 ring-1 ring-gray-200 \
-                               focus-visible:ring-gray-300 rounded-lg p-2"
+                    className="outline-0 ring-1 ring-gray-900 \
+                               focus-visible:ring-gray-600 rounded-lg p-2 \
+                               w-full"
                     onChange=handle_input_change />
         </div>
       </div>
