@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <symbol id="alert-triangle" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 13V9m.5 7.5a.5.5 0 0 1-1 0m1 0a.5.5 0 0 0-1 0m1 0h-1m7.831-6.409-.351-.627c-2.281-4.073-3.422-6.11-4.922-6.788a5 5 0 0 0-4.116 0c-1.5.678-2.64 2.715-4.922 6.788l-.351.627c-2.193 3.916-3.29 5.874-3.106 7.477a5 5 0 0 0 2.045 3.489C4.917 22 7.16 22 11.649 22h.702c4.488 0 6.732 0 8.041-.943a5 5 0 0 0 2.045-3.489c.183-1.603-.913-3.561-3.106-7.477Z"/>
+    </symbol>
+  </defs>
+</svg>
+

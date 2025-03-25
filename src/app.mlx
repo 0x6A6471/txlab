@@ -1,4 +1,5 @@
 open React
+open Pages
 
 let[@react.component] make () =
   let url = ReasonReactRouter.useUrl () in
