@@ -22,7 +22,7 @@ let[@react.component] make () =
     with
     | _ -> set_error (fun _ -> Some "Invalid transaction hex")
   in
-  <main>
+  <main className="space-y-16">
     <form onSubmit=handle_submit>
       <div>
         <label htmlFor="hex">(string "Transaction hex")</label>
@@ -32,8 +32,8 @@ let[@react.component] make () =
                     type_="text"
                     autoFocus=true
                     rows=10
-                    className="mt-1 outline-0 ring-1 ring-gray-900 \
-                               focus-visible:ring-gray-700 rounded-lg p-2 \
+                    className="mt-1 outline-0 ring-1 ring-gray-800 \
+                               focus-visible:ring-gray-700 rounded-xl p-2 \
                                w-full"
                     onChange=handle_input_change />
         </div>
@@ -47,12 +47,12 @@ let[@react.component] make () =
              <Ui.Icon name="alert-triangle" /> (string error)
            </div>)
         <button type_="submit"
-                className="rounded-full bg-gray-100 px-3 py-1.5 text-sm \
+                className="rounded-full bg-gray-50 px-3 py-1.5 text-sm \
                            font-medium text-gray-950 shadow-sm \
-                           hover:bg-gray-200 focus-visible:outline \
-                           focus-visible:outline-2 \
+                           hover:bg-gray-100 focus-visible:outline \
+                           focus-visible:outline-1 \
                            focus-visible:outline-offset-2 \
-                           focus-visible:outline-gray-300">
+                           focus-visible:outline-gray-50">
           (string "Submit")
         </button>
       </div>
