@@ -32,8 +32,8 @@ let[@react.component] make () =
                     type_="text"
                     autoFocus=true
                     rows=10
-                    className="mt-1 outline-0 ring-1 ring-gray-800 \
-                               focus-visible:ring-gray-700 rounded-xl p-2 \
+                    className="mt-1 outline-0 ring-1 ring-gray-900 \
+                               focus-visible:ring-gray-800 rounded-xl p-2 \
                                w-full"
                     onChange=handle_input_change />
         </div>
@@ -61,5 +61,28 @@ let[@react.component] make () =
      | [] -> null
      | _ ->
        <pre>(string (Js.Json.stringifyWithSpace (Obj.magic outputs) 2))</pre>)
+    <div>
+      <p className="inline-flex items-center gap-x-2 mb-1">
+        <Ui.Icon name="arrow-right" /> <span>(string "Outputs")</span>
+      </p>
+      <div className="rounded-xl bg-gray-950 flex flex-col">
+        <div className="border-b border-gray-900 p-4">
+          <h3 className="text-gray-50 font-medium">(string "outputs[0]")</h3>
+        </div>
+        <dl className="divide-y divide-gray-900 ">
+          <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4">
+            <dt className="text-gray-100">(string "Value")</dt>
+            <dd className="sm:col-span-3">(string "25079156")</dd>
+          </div>
+          <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4 break-words">
+            <dt className="text-gray-100">(string "Script")</dt>
+            <dd className="sm:col-span-3">
+              (string
+                 "97b09bcaae872ede5d26820fd248924c54c709af1ac6ece0918120c8245d629f")
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
   </main>
 ;;
