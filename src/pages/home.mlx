@@ -22,6 +22,17 @@ let[@react.component] make () =
     with
     | _ -> set_error (fun _ -> Some "Invalid transaction hex")
   in
+  (*
+     TODO: replace with values from txn
+  *)
+  let byte_array = [| 0; 32; 57 |] in
+  let hex_string =
+    byte_array
+    |> Array.to_list
+    |> List.drop 2
+    |> List.map (Printf.sprintf "%02x")
+    |> String.concat ""
+  in
   <main className="space-y-16">
     <form onSubmit=handle_submit>
       <div>
@@ -32,7 +43,7 @@ let[@react.component] make () =
                     type_="text"
                     autoFocus=true
                     rows=10
-                    className="mt-1 outline-0 ring-1 ring-gray-800 \
+                    className="mt-1 outline-0 ring-1 ring-gray-900 \
                                focus-visible:ring-gray-700 rounded-xl p-2 \
                                w-full"
                     onChange=handle_input_change />
@@ -42,17 +53,16 @@ let[@react.component] make () =
         (match error with
          | None -> <div />
          | Some error ->
-           <div className="inline-flex items-center gap-x-2  text-sm \
-                           text-red-600">
+           <div className="inline-flex items-center gap-x-2  text-sm text-error">
              <Ui.Icon name="alert-triangle" /> (string error)
            </div>)
         <button type_="submit"
-                className="rounded-full bg-gray-50 px-3 py-1.5 text-sm \
+                className="rounded-full bg-gray-400 px-3 py-1.5 text-sm \
                            font-medium text-gray-950 shadow-sm \
-                           hover:bg-gray-100 focus-visible:outline \
+                           hover:bg-gray-300 focus-visible:outline \
                            focus-visible:outline-1 \
                            focus-visible:outline-offset-2 \
-                           focus-visible:outline-gray-50">
+                           focus-visible:outline-gray-100">
           (string "Submit")
         </button>
       </div>
@@ -61,5 +71,26 @@ let[@react.component] make () =
      | [] -> null
      | _ ->
        <pre>(string (Js.Json.stringifyWithSpace (Obj.magic outputs) 2))</pre>)
+    <div>
+      <h2 className="inline-flex items-center gap-x-2 mb-4 text-lg text-gray-50">
+        <Ui.Icon name="arrow-right" /> <span>(string "Outputs")</span>
+      </h2>
+      <div className="rounded-xl bg-gray-950 flex flex-col">
+        <div className="border-b border-gray-900/50 p-4">
+          <h3 className="text-candle">(string "outputs[0]")</h3>
+        </div>
+        <dl className="divide-y divide-gray-900/50">
+          (* TODO: replace with radix bindings popover to display btc on hover *)
+          <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4">
+            <dt>(string "Value")</dt>
+            <dd className="sm:col-span-3">(string "25079156")</dd>
+          </div>
+          <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4 break-words">
+            <dt>(string "Script")</dt>
+            <dd className="sm:col-span-3">(string hex_string)</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
   </main>
 ;;
