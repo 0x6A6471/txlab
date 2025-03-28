@@ -1,15 +1,15 @@
 open React
 open Melange_bitcoin_lib
 
-type t = Psbt.psbt_tx_output list
+type t = Psbt.psbt_tx_output array
 
 let[@react.component] make () =
   let hex, set_hex = useState (fun _ -> "") in
-  let outputs, set_outputs = useState (fun _ : t -> []) in
+  let outputs, set_outputs = useState (fun _ : t -> [||]) in
   let error, set_error = useState (fun _ -> None) in
   let handle_input_change event =
     set_error (fun _ -> None);
-    set_outputs (fun _ -> []);
+    set_outputs (fun _ -> [||]);
     let value = (Event.Form.target event)##value in
     set_hex (fun _ -> value)
   in
@@ -20,18 +20,10 @@ let[@react.component] make () =
       let outputs = Psbt.getTxOutputs psbt in
       set_outputs (fun _ -> outputs)
     with
-    | _ -> set_error (fun _ -> Some "Invalid transaction hex")
-  in
-  (*
-     TODO: replace with values from txn
-  *)
-  let byte_array = [| 0; 32; 57 |] in
-  let hex_string =
-    byte_array
-    |> Array.to_list
-    |> List.drop 2
-    |> List.map (Printf.sprintf "%02x")
-    |> String.concat ""
+    | exn ->
+      let error_message = Printexc.to_string exn in
+      Js.log2 "Error occurred: " error_message;
+      set_error (fun _ -> Some ("Invalid transaction hex: " ^ error_message))
   in
   <main className="space-y-16">
     <form onSubmit=handle_submit>
@@ -68,29 +60,34 @@ let[@react.component] make () =
       </div>
     </form>
     (match outputs with
-     | [] -> null
+     | [||] -> null
      | _ ->
-       <pre>(string (Js.Json.stringifyWithSpace (Obj.magic outputs) 2))</pre>)
-    <div>
-      <h2 className="inline-flex items-center gap-x-2 mb-4 text-lg text-gray-50">
-        <Ui.Icon name="arrow-right" /> <span>(string "Outputs")</span>
-      </h2>
-      <div className="rounded-xl bg-gray-950 flex flex-col">
-        <div className="border-b border-gray-900/50 p-4">
-          <h3 className="text-candle">(string "outputs[0]")</h3>
-        </div>
-        <dl className="divide-y divide-gray-900/50">
-          (* TODO: replace with radix bindings popover to display btc on hover *)
-          <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4">
-            <dt>(string "Value")</dt>
-            <dd className="sm:col-span-3">(string "25079156")</dd>
-          </div>
-          <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4 break-words">
-            <dt>(string "Script")</dt>
-            <dd className="sm:col-span-3">(string hex_string)</dd>
-          </div>
-        </dl>
-      </div>
-    </div>
+       <div>
+         <h2 className="inline-flex items-center gap-x-2 mb-4 text-lg \
+                        text-gray-50">
+           <Ui.Icon name="arrow-right" /> <span>(string "Outputs")</span>
+         </h2>
+         <div className="rounded-xl bg-gray-950 flex flex-col">
+           <div className="border-b border-gray-900/50 p-4">
+             <h3 className="text-candle">(string "outputs[0]")</h3>
+           </div>
+           <dl className="divide-y divide-gray-900/50">
+             (* TODO: replace with radix bindings popover to display btc on hover *)
+             <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4">
+               <dt>(string "Value")</dt>
+               <dd className="sm:col-span-3">
+                 (string (Js.Bigint.toString outputs.(0).value ^ " sats"))
+               </dd>
+             </div>
+             <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4 break-words">
+               <dt>(string "Script")</dt>
+               <dd className="sm:col-span-3">
+                 (string
+                    (Script.toASM (Script.BufferChunks outputs.(0).script)))
+               </dd>
+             </div>
+           </dl>
+         </div>
+       </div>)
   </main>
 ;;
