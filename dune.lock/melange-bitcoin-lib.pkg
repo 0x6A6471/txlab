@@ -6,6 +6,6 @@
 
 (source
  (fetch
-  (url git+https://github.com/0x6A6471/melange-bitcoin-lib)))
+  (url file:///home/x6a6471/Developer/ocaml/melange-bitcoin-lib)))
 
 (dev)

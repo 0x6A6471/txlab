@@ -14,8 +14,9 @@
 (using melange 0.1)
 
 ; bitcoin-lib
+; TODO: update once melange-bitcoin-lib is published
 (pin
- (url "git+https://github.com/0x6A6471/melange-bitcoin-lib")
+ (url "../melange-bitcoin-lib")
  (package (name melange-bitcoin-lib)))
 
 ; mlx files
