@@ -24,7 +24,7 @@ let[@react.component] make () =
     | exn ->
       let error_message = Printexc.to_string exn in
       Js.log2 "Error occurred: " error_message;
-      set_error (fun _ -> Some ("Invalid transaction hex: " ^ error_message))
+      set_error (fun _ -> Some "Invalid transaction hex")
   in
   let script_text code =
     match Ops.is_op_code code with
