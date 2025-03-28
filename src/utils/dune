@@ -1,0 +1,4 @@
+(library
+ (name utils)
+ (modes melange)
+ (preprocess (pps melange.ppx)))

@@ -1,5 +1,6 @@
 open React
 open Melange_bitcoin_lib
+open Utils
 
 type t = Psbt.psbt_tx_output array
 
@@ -24,6 +25,16 @@ let[@react.component] make () =
       let error_message = Printexc.to_string exn in
       Js.log2 "Error occurred: " error_message;
       set_error (fun _ -> Some ("Invalid transaction hex: " ^ error_message))
+  in
+  let script_text code =
+    match Ops.is_op_code code with
+    | true ->
+      <p key=code
+         className="inline-flex items-center rounded-full bg-gray-900 px-1.5 \
+                    py-0.5 text-xs font-medium ring-1 ring-inset ring-gray-600">
+        (string code)
+      </p>
+    | false -> <p key=code>(string code)</p>
   in
   <main className="space-y-16">
     <form onSubmit=handle_submit>
@@ -54,7 +65,7 @@ let[@react.component] make () =
                            hover:bg-gray-300 focus-visible:outline \
                            focus-visible:outline-1 \
                            focus-visible:outline-offset-2 \
-                           focus-visible:outline-gray-100">
+                           focus-visible:outline-gray-400">
           (string "Submit")
         </button>
       </div>
@@ -67,27 +78,41 @@ let[@react.component] make () =
                         text-gray-50">
            <Ui.Icon name="arrow-right" /> <span>(string "Outputs")</span>
          </h2>
-         <div className="rounded-xl bg-gray-950 flex flex-col">
-           <div className="border-b border-gray-900/50 p-4">
-             <h3 className="text-candle">(string "outputs[0]")</h3>
-           </div>
-           <dl className="divide-y divide-gray-900/50">
-             (* TODO: replace with radix bindings popover to display btc on hover *)
-             <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4">
-               <dt>(string "Value")</dt>
-               <dd className="sm:col-span-3">
-                 (string (Js.Bigint.toString outputs.(0).value ^ " sats"))
-               </dd>
-             </div>
-             <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4 break-words">
-               <dt>(string "Script")</dt>
-               <dd className="sm:col-span-3">
-                 (string
-                    (Script.toASM (Script.BufferChunks outputs.(0).script)))
-               </dd>
-             </div>
-           </dl>
-         </div>
+         <ul className="space-y-4">
+           (Array.mapi
+              (fun index (output : Psbt.psbt_tx_output) ->
+                let asm = Script.toASM (Script.BufferChunks output.script) in
+                let split = String.split_on_char ' ' asm in
+                <li key=(string_of_int index)
+                    className="rounded-xl bg-gray-950 flex flex-col">
+                  <div className="border-b border-gray-900/50 p-4">
+                    <h3 className="text-candle">
+                      (string @@ "outputs[" ^ string_of_int index ^ "]")
+                    </h3>
+                  </div>
+                  <dl className="divide-y divide-gray-900/50">
+                    (* TODO: replace with radix bindings popover to display btc on hover *)
+                    <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4">
+                      <dt>(string "Value")</dt>
+                      <dd className="sm:col-span-3">
+                        (string @@ Js.Bigint.toString output.value ^ " sats")
+                      </dd>
+                    </div>
+                    <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4 \
+                                    break-words">
+                      <dt>(string "Script")</dt>
+                      <dd className="sm:col-span-3 space-y-2">
+                        (split
+                         |> Array.of_list
+                         |> Array.map script_text
+                         |> React.array)
+                      </dd>
+                    </div>
+                  </dl>
+                </li>)
+              outputs
+            |> array)
+         </ul>
        </div>)
   </main>
 ;;
