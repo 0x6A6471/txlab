@@ -30,8 +30,8 @@ let[@react.component] make () =
     match Ops.is_op_code code with
     | true ->
       <p key=code
-         className="inline-flex items-center rounded-full bg-gray-900 px-1.5 \
-                    py-0.5 text-xs font-medium ring-1 ring-inset ring-gray-600">
+         className="inline-flex items-center rounded-full px-1.5 py-0.5 \
+                    font-medium ring-1 ring-inset ring-gray-700 text-xs">
         (string code)
       </p>
     | false -> <p key=code>(string code)</p>
@@ -82,6 +82,7 @@ let[@react.component] make () =
            (Array.mapi
               (fun index (output : Psbt.psbt_tx_output) ->
                 let asm = Script.toASM (Script.BufferChunks output.script) in
+                let script_type = Ops.get_script_type_from_asm asm in
                 let split = String.split_on_char ' ' asm in
                 <li key=(string_of_int index)
                     className="rounded-xl bg-gray-950 flex flex-col">
@@ -92,20 +93,38 @@ let[@react.component] make () =
                   </div>
                   <dl className="divide-y divide-gray-900/50">
                     (* TODO: replace with radix bindings popover to display btc on hover *)
-                    <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4">
+                    <div className="p-4 sm:grid sm:grid-cols-6 sm:gap-4">
                       <dt>(string "Value")</dt>
-                      <dd className="sm:col-span-3">
+                      <dd className="sm:col-span-5">
                         (string @@ Js.Bigint.toString output.value ^ " sats")
                       </dd>
                     </div>
-                    <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4 \
+                    <div className="p-4 sm:grid sm:grid-cols-6 sm:gap-4 \
                                     break-words">
                       <dt>(string "Script")</dt>
-                      <dd className="sm:col-span-3 space-y-2">
-                        (split
-                         |> Array.of_list
-                         |> Array.map script_text
-                         |> React.array)
+                      <dd className="sm:col-span-5 space-y-6">
+                        (match output.address with
+                         | Some address ->
+                           <div className="flex flex-col md:flex-row \
+                                           justify-between md:items-center">
+                             <div className="flex items-center space-x-1">
+                               <p className="inline-flex items-center \
+                                             rounded-full bg-gray-900 px-1.5 \
+                                             py-0.5 text-xs font-medium ring-1 \
+                                             ring-inset ring-gray-700">
+                                 (string script_type)
+                               </p>
+                               <p className="text-xs">(string "lock script")</p>
+                             </div>
+                             <p>(string address)</p>
+                           </div>
+                         | None -> null)
+                        <div className="space-y-1">
+                          (split
+                           |> Array.of_list
+                           |> Array.map script_text
+                           |> React.array)
+                        </div>
                       </dd>
                     </div>
                   </dl>
