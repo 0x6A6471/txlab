@@ -28,12 +28,7 @@ let[@react.component] make () =
   in
   let script_text code =
     match Ops.is_op_code code with
-    | true ->
-      <p key=code
-         className="inline-flex items-center rounded-full px-1.5 py-0.5 \
-                    font-medium ring-1 ring-inset ring-gray-700 text-xs">
-        (string code)
-      </p>
+    | true -> <Ui.Badge key=code variant=`secondary label=code />
     | false -> <p key=code>(string code)</p>
   in
   <main className="space-y-16">
@@ -107,12 +102,7 @@ let[@react.component] make () =
                            <div className="flex flex-col md:flex-row \
                                            justify-between md:items-center">
                              <div className="flex items-center space-x-1">
-                               <p className="inline-flex items-center \
-                                             rounded-full bg-gray-900 px-1.5 \
-                                             py-0.5 text-xs font-medium ring-1 \
-                                             ring-inset ring-gray-700">
-                                 (string script_type)
-                               </p>
+                               <Ui.Badge label=script_type />
                                <p className="text-xs">(string "lock script")</p>
                              </div>
                              <p>(string address)</p>
