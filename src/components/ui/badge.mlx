@@ -1,0 +1,14 @@
+open React
+
+let[@react.component] make ~label ?(variant = `primary) =
+  let styles =
+    match variant with
+    | `primary -> "bg-gray-900 ring-gray-600 text-gray-400"
+    | `secondary -> "bg-inherit ring-gray-700 text-gray-600"
+  in
+  <span className=(styles
+                   ^ " inline-flex items-center rounded-full px-1.5 py-0.5 \
+                      font-medium ring-1 ring-inset text-xs")>
+    (string label)
+  </span>
+;;
