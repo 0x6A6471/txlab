@@ -13,6 +13,7 @@ depends: [
   "melange"
   "reason-react"
   "melange-bitcoin-lib"
+  "melange-radix-ui"
   "mlx"
   "ocamlmerlin-mlx"
   "ocamlformat-mlx"

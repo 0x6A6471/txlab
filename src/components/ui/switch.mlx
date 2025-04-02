@@ -1,0 +1,13 @@
+open React
+open Melange_radix_ui
+
+let[@react.component] make ~label ~checked ~set_checked =
+  <div className="flex items-center gap-x-2">
+    <Switch.Root checked
+                 onCheckedChange=set_checked
+                 className="relative h-6 w-10 cursor-default rounded-full bg-gray-900 data-[state=checked]:bg-mint">
+      <Switch.Thumb className="block size-5 translate-x-0.5 rounded-full bg-white transition-transform duration-300 ease-in-out will-change-transform data-[state=checked]:translate-x-[18px]" />
+    </Switch.Root>
+    <label htmlFor="network" className="w-14 text-right">(string label)</label>
+  </div>
+;;

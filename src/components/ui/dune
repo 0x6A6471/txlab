@@ -1,6 +1,6 @@
 (library
  (name ui)
  (modes melange)
- (libraries reason-react melange.belt)
+ (libraries reason-react melange.belt melange-radix-ui)
  (preprocess (pps melange.ppx reason-react-ppx))
- (modules badge icon))
+ (modules badge icon switch))
