@@ -109,7 +109,8 @@ let[@react.component] make () =
                     <div className="p-4 sm:grid sm:grid-cols-6 sm:gap-4">
                       <dt>(string "Value")</dt>
                       <dd className="sm:col-span-5">
-                        (string @@ Js.Bigint.toString output.value ^ " sats")
+                        <Ui.Tooltip label=(Utils.Number_fns.btc_of_sats output.value ^ " BTC")
+                                    trigger=(Js.Bigint.toString output.value ^ " sats") />
                       </dd>
                     </div>
                     <div className="p-4 sm:grid sm:grid-cols-6 sm:gap-4 break-words">
