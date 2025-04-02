@@ -8,16 +8,13 @@ let[@react.component] make () =
   let hex, set_hex = useState (fun _ -> "") in
   let outputs, set_outputs = useState (fun _ : t -> [||]) in
   let error, set_error = useState (fun _ -> None) in
-  let handle_input_change event =
-    set_error (fun _ -> None);
-    set_outputs (fun _ -> [||]);
-    let value = (Event.Form.target event)##value in
-    set_hex (fun _ -> value)
-  in
-  let handle_submit e =
-    Event.Form.preventDefault e;
+  let is_mainnet, set_is_mainnet = useState (fun _ -> true) in
+  let network = if is_mainnet then Networks.mainnet else Networks.testnet in
+  let switch_label = if is_mainnet then "Mainnet" else "Testnet" in
+  let parse_hex () =
     try
-      let psbt = Psbt.fromHex hex () in
+      let psbt_opts = { Psbt.network = Some network; maximum_fee_rate = None } in
+      let psbt = Psbt.fromHex hex ~psbt_opts () in
       let outputs = Psbt.getTxOutputs psbt in
       set_outputs (fun _ -> outputs)
     with
@@ -26,12 +23,43 @@ let[@react.component] make () =
       Js.log2 "Error occurred: " error_message;
       set_error (fun _ -> Some "Invalid transaction hex")
   in
+
+  useEffect1
+    (fun () ->
+      match outputs with
+      | [||] -> None
+      | _ ->
+        parse_hex ();
+        None)
+    [| is_mainnet |];
+
+  let handle_input_change event =
+    set_error (fun _ -> None);
+    set_outputs (fun _ -> [||]);
+    let value = (Event.Form.target event)##value in
+    set_hex (fun _ -> value)
+  in
+
+  let handle_network_change _ = set_is_mainnet (fun current -> not current) in
+
+  let handle_submit e =
+    Event.Form.preventDefault e;
+    match hex with
+    | "" -> set_error (fun _ -> Some "A transaction hex is required")
+    | _ -> parse_hex ()
+  in
+
   let script_text code =
     match Ops.is_op_code code with
     | true -> <Ui.Badge key=code variant=`secondary label=code />
     | false -> <p key=code>(string code)</p>
   in
+
   <main className="space-y-16">
+    <div className="flex items-center justify-between py-2">
+      <img src="/logo.svg" className="pointer-events-none select-none" />
+      <Ui.Switch label=switch_label checked=is_mainnet set_checked=handle_network_change />
+    </div>
     <form onSubmit=handle_submit>
       <div>
         <label htmlFor="hex">(string "Transaction hex")</label>
@@ -40,9 +68,7 @@ let[@react.component] make () =
                     name="hex"
                     type_="text"
                     autoFocus=true
-                    className="mt-1 outline-0 ring-1 ring-gray-900 \
-                               focus-visible:ring-gray-700 rounded-xl p-2 \
-                               w-full min-h-52"
+                    className="mt-1 outline-0 ring-1 ring-gray-900 focus-visible:ring-gray-700 rounded-xl p-2 w-full min-h-52"
                     onChange=handle_input_change />
         </div>
       </div>
@@ -54,12 +80,7 @@ let[@react.component] make () =
              <Ui.Icon name="alert-triangle" /> (string error)
            </div>)
         <button type_="submit"
-                className="rounded-full bg-gray-400 px-3 py-1.5 text-sm \
-                           font-medium text-gray-950 shadow-sm \
-                           hover:bg-gray-300 focus-visible:outline \
-                           focus-visible:outline-1 \
-                           focus-visible:outline-offset-2 \
-                           focus-visible:outline-gray-400">
+                className="rounded-full bg-gray-400 px-3 py-1.5 text-sm font-medium text-gray-950 shadow-sm hover:bg-gray-300 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-gray-400">
           (string "Submit")
         </button>
       </div>
@@ -68,8 +89,7 @@ let[@react.component] make () =
      | [||] -> null
      | _ ->
        <div>
-         <h2 className="inline-flex items-center gap-x-2 mb-4 text-lg \
-                        text-gray-50">
+         <h2 className="inline-flex items-center gap-x-2 mb-4 text-lg text-gray-50">
            <Ui.Icon name="arrow-right" /> <span>(string "Outputs")</span>
          </h2>
          <ul className="space-y-4">
@@ -78,8 +98,7 @@ let[@react.component] make () =
                 let asm = Script.toASM (Script.BufferChunks output.script) in
                 let script_type = Ops.get_script_type_from_asm asm in
                 let split = String.split_on_char ' ' asm in
-                <li key=(string_of_int index)
-                    className="rounded-xl bg-gray-950 flex flex-col">
+                <li key=(string_of_int index) className="rounded-xl bg-gray-950 flex flex-col">
                   <div className="border-b border-gray-900/50 p-4">
                     <h3 className="text-candle">
                       (string @@ "outputs[" ^ string_of_int index ^ "]")
@@ -93,14 +112,12 @@ let[@react.component] make () =
                         (string @@ Js.Bigint.toString output.value ^ " sats")
                       </dd>
                     </div>
-                    <div className="p-4 sm:grid sm:grid-cols-6 sm:gap-4 \
-                                    break-words">
+                    <div className="p-4 sm:grid sm:grid-cols-6 sm:gap-4 break-words">
                       <dt>(string "Script")</dt>
                       <dd className="sm:col-span-5 space-y-6">
                         (match output.address with
                          | Some address ->
-                           <div className="flex flex-col md:flex-row \
-                                           justify-between md:items-center">
+                           <div className="flex flex-col md:flex-row justify-between md:items-center">
                              <div className="flex items-center space-x-1">
                                <Ui.Badge label=script_type />
                                <p className="text-xs">(string "lock script")</p>
@@ -109,10 +126,7 @@ let[@react.component] make () =
                            </div>
                          | None -> null)
                         <div className="space-y-1">
-                          (split
-                           |> Array.of_list
-                           |> Array.map script_text
-                           |> React.array)
+                          (split |> Array.of_list |> Array.map script_text |> React.array)
                         </div>
                       </dd>
                     </div>

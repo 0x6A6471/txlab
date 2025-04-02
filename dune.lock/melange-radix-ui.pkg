@@ -1,0 +1,19 @@
+(version dev)
+
+(dune)
+
+(depends
+ ocaml
+ dune
+ melange
+ reason
+ reason-react
+ reason-react-ppx
+ ocamlformat
+ ocaml-lsp-server)
+
+(source
+ (fetch
+  (url file:///home/x6a6471/Developer/ocaml/melange-radix-ui)))
+
+(dev)

@@ -19,6 +19,12 @@
  (url "../melange-bitcoin-lib")
  (package (name melange-bitcoin-lib)))
 
+; radix-ui
+; TODO: update once melange-radix-ui is published
+(pin
+ (url "../melange-radix-ui")
+ (package (name melange-radix-ui)))
+
 ; mlx files
 (dialect
  (name mlx)
@@ -36,7 +42,9 @@
  (allow_empty)
  (description "A longer description")
  (depends
-   ocaml dune melange reason-react melange-bitcoin-lib
+   ocaml dune melange reason-react 
+   ;; bindings
+   melange-bitcoin-lib melange-radix-ui
    ;; mlx
    mlx ocamlmerlin-mlx
    ;; dev tools
