@@ -62,7 +62,7 @@ let[@react.component] make () =
     </div>
     <form onSubmit=handle_submit>
       <div>
-        <label htmlFor="hex">(string "Transaction hex")</label>
+        <label htmlFor="hex" className="text-gray-100">(string "Transaction hex")</label>
         <div>
           <textarea id="hex"
                     name="hex"

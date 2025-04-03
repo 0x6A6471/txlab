@@ -2,13 +2,13 @@ open React
 open Melange_radix_ui
 
 let[@react.component] make ~trigger ~label =
-  <Tooltip.Provider>
+  <Tooltip.Provider delayDuration=300>
     <Tooltip.Root>
       <Tooltip.Trigger>(string trigger)</Tooltip.Trigger>
       <Tooltip.Portal>
-        <Tooltip.Content className="select-none rounded bg-white px-[15px] py-2.5 text-[15px] leading-none text-violet11 shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] will-change-[transform,opacity] data-[state=delayed-open]:data-[side=bottom]:animate-slideUpAndFade data-[state=delayed-open]:data-[side=left]:animate-slideRightAndFade data-[state=delayed-open]:data-[side=right]:animate-slideLeftAndFade data-[state=delayed-open]:data-[side=top]:animate-slideDownAndFade"
+        <Tooltip.Content className="select-none rounded-lg bg-gray-900 p-2 leading-none will-change-[transform,opacity] data-[state=delayed-open]:data-[side=bottom]:animate-slideUpAndFade data-[state=delayed-open]:data-[side=left]:animate-slideRightAndFade data-[state=delayed-open]:data-[side=right]:animate-slideLeftAndFade data-[state=delayed-open]:data-[side=top]:animate-slideDownAndFade"
                          sideOffset=5>
-          (string label) <Tooltip.Arrow className="fill-white" />
+          (string label) <Tooltip.Arrow className="fill-gray-900" />
         </Tooltip.Content>
       </Tooltip.Portal>
     </Tooltip.Root>
