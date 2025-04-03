@@ -11,6 +11,18 @@ let[@react.component] make () =
   let is_mainnet, set_is_mainnet = useState (fun _ -> true) in
   let network = if is_mainnet then Networks.mainnet else Networks.testnet in
   let switch_label = if is_mainnet then "Mainnet" else "Testnet" in
+
+  React.useEffect0 (fun () ->
+    begin
+      match Local_storage.get_item "network" with
+      | Some "testnet" -> set_is_mainnet (fun _ -> false)
+      | Some "mainnet" -> set_is_mainnet (fun _ -> true)
+      | _ ->
+        Local_storage.set_item "network" "mainnet";
+        ()
+    end;
+    None);
+
   let parse_hex () =
     try
       let psbt_opts = { Psbt.network = Some network; maximum_fee_rate = None } in
@@ -40,7 +52,14 @@ let[@react.component] make () =
     set_hex (fun _ -> value)
   in
 
-  let handle_network_change _ = set_is_mainnet (fun current -> not current) in
+  let handle_network_change _ =
+    set_is_mainnet (fun current ->
+      let is_mainnet = not current in
+      if is_mainnet
+      then Local_storage.set_item "network" "mainnet"
+      else Local_storage.set_item "network" "testnet";
+      is_mainnet)
+  in
 
   let handle_submit e =
     Event.Form.preventDefault e;
