@@ -44,3 +44,5 @@ styles/output.css
 dev-tools.locks/
 
 node_modules
+.vercel
+dist
