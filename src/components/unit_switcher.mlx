@@ -2,43 +2,27 @@ open React
 open Melange_radix_ui
 open Utils
 
-type t =
-  [ `sats
-  | `btc
-  ]
-
-let[@react.component] make () =
+let[@react.component] make ~unit ~set_unit =
   let is_open, set_is_open = useState (fun _ -> false) in
-  let unit, set_unit = useState (fun _ : t -> `sats) in
-  useEffect0 (fun () ->
-    begin
-      match Local_storage.get_item "unit" with
-      | Some "btc" -> set_unit (fun _ -> `btc)
-      | Some "sats" -> set_unit (fun _ -> `sats)
-      | _ ->
-        Local_storage.set_item "unit" "sats";
-        ()
-    end;
-    None);
 
   useEffect1
     (fun () ->
       begin
         match unit with
-        | `btc -> Local_storage.set_item "unit" "btc"
-        | `sats -> Local_storage.set_item "unit" "sats"
+        | "btc" -> Local_storage.set_item "unit" "btc"
+        | _ -> Local_storage.set_item "unit" "sats"
       end;
       None)
     [| unit |];
 
   let icon =
     match unit with
-    | `btc -> <Ui.Icon name="btc" variant=`filled />
-    | `sats -> <Ui.Icon name="sats" variant=`filled />
+    | "btc" -> <Ui.Icon name="btc" variant=`filled />
+    | _ -> <Ui.Icon name="sats" variant=`filled />
   in
 
   let item_styles =
-    "group relative flex select-none items-center rounded text-sm leading-none textoutline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-gray-900 data-[highlighted]:text-gray-50 px-1 py-1.5 gap-x-2 focus-visible:outline-none"
+    "group relative flex select-none items-center justify-between rounded text-sm leading-none textoutline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-gray-900 data-[highlighted]:text-gray-50 px-1 py-1.5 focus-visible:outline-none"
   in
 
   <Tooltip.Provider delayDuration=300>
@@ -55,11 +39,23 @@ let[@react.component] make () =
           <Dropdown_menu.Content align=`end_
                                  className="min-w-32 rounded-md bg-black p-1 will-change-[opacity,transform] data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade data-[side=right]:animate-slideLeftAndFade data-[side=top]:animate-slideDownAndFade border border-gray-900"
                                  sideOffset=5>
-            <Dropdown_menu.Item className=item_styles onSelect=(fun _ -> set_unit (fun _ -> `btc))>
-              <Ui.Icon name="btc" variant=`filled /> (string "BTC")
+            <Dropdown_menu.Item className=item_styles onSelect=(fun _ -> set_unit (fun _ -> "btc"))>
+              <div className="inline-flex gap-x-2 items-center">
+                <Ui.Icon name="btc" variant=`filled /> (string "BTC")
+              </div>
+              (match unit with
+               | "btc" ->
+                 <span className="inline-flex w-1.5 h-1.5 rounded-full items-center justify-center bg-mint" />
+               | _ -> null)
             </Dropdown_menu.Item>
-            <Dropdown_menu.Item className=item_styles onSelect=(fun _ -> set_unit (fun _ -> `sats))>
-              <Ui.Icon name="sats" variant=`filled /> (string "Sats")
+            <Dropdown_menu.Item className=item_styles onSelect=(fun _ -> set_unit (fun _ -> "sats"))>
+              <div className="inline-flex gap-x-2 items-center">
+                <Ui.Icon name="sats" variant=`filled /> (string "Sats")
+              </div>
+              (match unit with
+               | "sats" ->
+                 <span className="inline-flex w-1.5 h-1.5 rounded-full items-center justify-center bg-mint" />
+               | _ -> null)
             </Dropdown_menu.Item>
           </Dropdown_menu.Content>
         </Dropdown_menu.Portal>
