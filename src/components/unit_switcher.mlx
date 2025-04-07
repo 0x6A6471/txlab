@@ -1,0 +1,73 @@
+open React
+open Melange_radix_ui
+open Utils
+
+type t =
+  [ `sats
+  | `btc
+  ]
+
+let[@react.component] make () =
+  let is_open, set_is_open = useState (fun _ -> false) in
+  let unit, set_unit = useState (fun _ : t -> `sats) in
+  useEffect0 (fun () ->
+    begin
+      match Local_storage.get_item "unit" with
+      | Some "btc" -> set_unit (fun _ -> `btc)
+      | Some "sats" -> set_unit (fun _ -> `sats)
+      | _ ->
+        Local_storage.set_item "unit" "sats";
+        ()
+    end;
+    None);
+
+  useEffect1
+    (fun () ->
+      begin
+        match unit with
+        | `btc -> Local_storage.set_item "unit" "btc"
+        | `sats -> Local_storage.set_item "unit" "sats"
+      end;
+      None)
+    [| unit |];
+
+  let icon =
+    match unit with
+    | `btc -> <Ui.Icon name="btc" variant=`filled />
+    | `sats -> <Ui.Icon name="sats" variant=`filled />
+  in
+
+  let item_styles =
+    "group relative flex select-none items-center rounded text-sm leading-none textoutline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-gray-900 data-[highlighted]:text-gray-50 px-1 py-1.5 gap-x-2 focus-visible:outline-none"
+  in
+
+  <Tooltip.Provider delayDuration=300>
+    <Tooltip.Root>
+      <Dropdown_menu.Root open_=is_open onOpenChange=set_is_open modal=false>
+        <Tooltip.Trigger asChild=true>
+          <Dropdown_menu.Trigger asChild=true>
+            <button className="p-2 rounded-xl flex justify-between items-center shadow outline-none text-sm border border-gray-800">
+              icon
+            </button>
+          </Dropdown_menu.Trigger>
+        </Tooltip.Trigger>
+        <Dropdown_menu.Portal>
+          <Dropdown_menu.Content align=`end_
+                                 className="min-w-32 rounded-md bg-black p-1 will-change-[opacity,transform] data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade data-[side=right]:animate-slideLeftAndFade data-[side=top]:animate-slideDownAndFade border border-gray-900"
+                                 sideOffset=5>
+            <Dropdown_menu.Item className=item_styles onSelect=(fun _ -> set_unit (fun _ -> `btc))>
+              <Ui.Icon name="btc" variant=`filled /> (string "BTC")
+            </Dropdown_menu.Item>
+            <Dropdown_menu.Item className=item_styles onSelect=(fun _ -> set_unit (fun _ -> `sats))>
+              <Ui.Icon name="sats" variant=`filled /> (string "Sats")
+            </Dropdown_menu.Item>
+          </Dropdown_menu.Content>
+        </Dropdown_menu.Portal>
+      </Dropdown_menu.Root>
+      <Tooltip.Content className="select-none rounded-lg bg-gray-900 p-2 leading-none will-change-[transform,opacity] data-[state=delayed-open]:data-[side=bottom]:animate-slideUpAndFade data-[state=delayed-open]:data-[side=left]:animate-slideRightAndFade data-[state=delayed-open]:data-[side=right]:animate-slideLeftAndFade data-[state=delayed-open]:data-[side=top]:animate-slideDownAndFade"
+                       sideOffset=5>
+        (string "Change display units")
+      </Tooltip.Content>
+    </Tooltip.Root>
+  </Tooltip.Provider>
+;;

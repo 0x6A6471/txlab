@@ -12,7 +12,7 @@ let[@react.component] make () =
   let network = if is_mainnet then Networks.mainnet else Networks.testnet in
   let switch_label = if is_mainnet then "Mainnet" else "Testnet" in
 
-  React.useEffect0 (fun () ->
+  useEffect0 (fun () ->
     begin
       match Local_storage.get_item "network" with
       | Some "testnet" -> set_is_mainnet (fun _ -> false)
@@ -74,7 +74,7 @@ let[@react.component] make () =
     | false -> <p key=code>(string code)</p>
   in
 
-  <main className="space-y-16">
+  <main className="space-y-16 w-full">
     <div className="flex items-center justify-between py-2">
       <img src="/logo.svg" className="pointer-events-none select-none" />
       <Ui.Switch label=switch_label checked=is_mainnet set_checked=handle_network_change />
@@ -108,9 +108,12 @@ let[@react.component] make () =
      | [||] -> null
      | _ ->
        <div>
-         <h2 className="inline-flex items-center gap-x-2 mb-4 text-lg text-gray-50">
-           <Ui.Icon name="arrow-right" /> <span>(string "Outputs")</span>
-         </h2>
+         <div className="flex items-center justify-between mb-4 ">
+           <h2 className="inline-flex items-center gap-x-2 text-lg text-gray-50">
+             <Ui.Icon name="arrow-right" /> <span>(string "Outputs")</span>
+           </h2>
+           <Components.Unit_switcher />
+         </div>
          <ul className="space-y-4">
            (Array.mapi
               (fun index (output : Psbt.psbt_tx_output) ->
