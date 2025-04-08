@@ -11,8 +11,25 @@ let[@react.component] make () =
   let is_mainnet, set_is_mainnet = useState (fun _ -> true) in
   let network = if is_mainnet then Networks.mainnet else Networks.testnet in
   let switch_label = if is_mainnet then "Mainnet" else "Testnet" in
+  let display_unit, set_display_unit =
+    useState (fun _ ->
+      match Local_storage.get_item "unit" with
+      | Some unit -> if unit = "btc" then "btc" else "sats"
+      | None -> "sats")
+  in
+  let tooltip_trigger value =
+    match display_unit with
+    | "btc" -> Utils.Number_fns.btc_of_sats value ^ " BTC"
+    | _ -> Js.Bigint.toString value ^ " sats"
+  in
 
-  React.useEffect0 (fun () ->
+  let tooltip_label value =
+    match display_unit with
+    | "btc" -> Js.Bigint.toString value ^ " sats"
+    | _ -> Utils.Number_fns.btc_of_sats value ^ " BTC"
+  in
+
+  useEffect0 (fun () ->
     begin
       match Local_storage.get_item "network" with
       | Some "testnet" -> set_is_mainnet (fun _ -> false)
@@ -74,7 +91,7 @@ let[@react.component] make () =
     | false -> <p key=code>(string code)</p>
   in
 
-  <main className="space-y-16">
+  <main className="space-y-16 w-full">
     <div className="flex items-center justify-between py-2">
       <img src="/logo.svg" className="pointer-events-none select-none" />
       <Ui.Switch label=switch_label checked=is_mainnet set_checked=handle_network_change />
@@ -108,9 +125,12 @@ let[@react.component] make () =
      | [||] -> null
      | _ ->
        <div>
-         <h2 className="inline-flex items-center gap-x-2 mb-4 text-lg text-gray-50">
-           <Ui.Icon name="arrow-right" /> <span>(string "Outputs")</span>
-         </h2>
+         <div className="flex items-center justify-between mb-4 ">
+           <h2 className="inline-flex items-center gap-x-2 text-lg text-gray-50">
+             <Ui.Icon name="arrow-right" /> <span>(string "Outputs")</span>
+           </h2>
+           <Components.Unit_switcher unit=display_unit set_unit=set_display_unit />
+         </div>
          <ul className="space-y-4">
            (Array.mapi
               (fun index (output : Psbt.psbt_tx_output) ->
@@ -124,12 +144,11 @@ let[@react.component] make () =
                     </h3>
                   </div>
                   <dl className="divide-y divide-gray-900/50">
-                    (* TODO: replace with radix bindings popover to display btc on hover *)
                     <div className="p-4 sm:grid sm:grid-cols-6 sm:gap-4">
                       <dt>(string "Value")</dt>
                       <dd className="sm:col-span-5">
-                        <Ui.Tooltip label=(Utils.Number_fns.btc_of_sats output.value ^ " BTC")
-                                    trigger=(Js.Bigint.toString output.value ^ " sats") />
+                        <Ui.Tooltip label=(tooltip_label output.value)
+                                    trigger=(tooltip_trigger output.value) />
                       </dd>
                     </div>
                     <div className="p-4 sm:grid sm:grid-cols-6 sm:gap-4 break-words">
