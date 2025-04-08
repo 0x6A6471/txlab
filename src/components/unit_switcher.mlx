@@ -25,9 +25,11 @@ let[@react.component] make ~unit ~set_unit =
     "group relative flex select-none items-center justify-between rounded text-sm leading-none textoutline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-gray-900 data-[highlighted]:text-gray-50 px-1 py-1.5 focus-visible:outline-none"
   in
 
+  let on_open_change state = set_is_open (fun _ -> state) in
+
   <Tooltip.Provider delayDuration=300>
     <Tooltip.Root>
-      <Dropdown_menu.Root open_=is_open onOpenChange=set_is_open modal=false>
+      <Dropdown_menu.Root open_=is_open onOpenChange=on_open_change modal=false>
         <Tooltip.Trigger asChild=true>
           <Dropdown_menu.Trigger asChild=true>
             <button className="p-2 rounded-xl flex justify-between items-center shadow outline-none text-sm border border-gray-800">
