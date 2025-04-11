@@ -3,7 +3,6 @@ open Melange_bitcoin_lib
 open Utils
 
 type t = Psbt.psbt_tx_output array
-type t' = Psbt.psbt_tx_input array
 
 let[@react.component] make () =
   let hex, set_hex = useState (fun _ -> "") in
