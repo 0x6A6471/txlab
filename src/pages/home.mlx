@@ -3,6 +3,7 @@ open Melange_bitcoin_lib
 open Utils
 
 type t = Psbt.psbt_tx_output array
+type t' = Psbt.psbt_tx_input array
 
 let[@react.component] make () =
   let hex, set_hex = useState (fun _ -> "") in
@@ -19,14 +20,14 @@ let[@react.component] make () =
   in
   let tooltip_trigger value =
     match display_unit with
-    | "btc" -> Utils.Number_fns.btc_of_sats value ^ " BTC"
+    | "btc" -> Number_fns.btc_of_sats value ^ " BTC"
     | _ -> Js.Bigint.toString value ^ " sats"
   in
 
   let tooltip_label value =
     match display_unit with
     | "btc" -> Js.Bigint.toString value ^ " sats"
-    | _ -> Utils.Number_fns.btc_of_sats value ^ " BTC"
+    | _ -> Number_fns.btc_of_sats value ^ " BTC"
   in
 
   useEffect0 (fun () ->
@@ -42,7 +43,7 @@ let[@react.component] make () =
 
   let parse_hex () =
     try
-      let psbt_opts = { Psbt.network = Some network; maximum_fee_rate = None } in
+      let psbt_opts = { Types.Psbt.network = Some network; maximum_fee_rate = None } in
       let psbt = Psbt.fromHex hex ~psbt_opts () in
       let outputs = Psbt.getTxOutputs psbt in
       set_outputs (fun _ -> outputs)
