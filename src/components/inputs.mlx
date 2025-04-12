@@ -5,7 +5,12 @@ open Utils
 
 type t = Psbt.psbt_tx_input
 
-let[@react.component] make ~inputs =
+let[@react.component] make ~(global_psbt : 'a Bip174.t option) ~inputs =
+  let script_text code =
+    match Ops.is_op_code code with
+    | true -> <Ui.Badge key=code variant=`secondary label=code />
+    | false -> <p key=code>(string code)</p>
+  in
   match inputs with
   | [||] -> null
   | _ ->
@@ -24,20 +29,48 @@ let[@react.component] make ~inputs =
                  <h3 className="text-candle">(string @@ "inputs[" ^ string_of_int index ^ "]")</h3>
                </div>
                <dl className="divide-y divide-gray-900/50">
-                 <div className="p-4 sm:grid sm:grid-cols-6 sm:gap-4">
+                 <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4">
                    <dt>(string "Previous TX ID")</dt>
-                   <dd className="sm:col-span-5">(string txid)</dd>
+                   <dd className="sm:col-span-3">(string txid)</dd>
                  </div>
-                 <div className="p-4 sm:grid sm:grid-cols-6 sm:gap-4">
+                 <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4">
                    <dt>(string "Previous output index")</dt>
-                   <dd className="sm:col-span-5">(string (string_of_int input.index))</dd>
+                   <dd className="sm:col-span-3">(string (string_of_int input.index))</dd>
                  </div>
                  (match input.sequence with
                   | Some s ->
-                    <div className="p-4 sm:grid sm:grid-cols-6 sm:gap-4 break-words">
+                    <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4 break-words">
                       <dt>(string "Sequence")</dt>
-                      <dd className="sm:col-span-5 space-y-6">(string @@ string_of_int s)</dd>
+                      <dd className="sm:col-span-3 space-y-6">(string @@ string_of_int s)</dd>
                     </div>
+                  | None -> null)
+                 (match global_psbt with
+                  | Some g ->
+                    Array.mapi
+                      (fun index (global_input : Bip174.psbt_input) ->
+                        match global_input.witnessScript with
+                        | Some script ->
+                          let asm = Script.toASM (Script.BufferChunks script) in
+                          let script_type = Ops.get_script_type_from_asm asm in
+                          let split = String.split_on_char ' ' asm in
+                          <div key=(string_of_int index)
+                               className="p-4 sm:grid sm:grid-cols-4 sm:gap-4 break-words">
+                            <dt>(string "Script")</dt>
+                            <dd className="sm:col-span-3 space-y-6">
+                              <div className="flex flex-col md:flex-row justify-between md:items-center">
+                                <div className="flex items-center space-x-1">
+                                  <Ui.Badge label=script_type />
+                                  <p className="text-xs">(string "witness script")</p>
+                                </div>
+                              </div>
+                              <div className="space-y-1 flex flex-col items-start">
+                                (split |> Array.of_list |> Array.map script_text |> React.array)
+                              </div>
+                            </dd>
+                          </div>
+                        | None -> null)
+                      g.data.inputs
+                    |> array
                   | None -> null)
                </dl>
              </li>)

@@ -6,22 +6,24 @@ open Utils
 
 type input = Psbt.psbt_tx_input
 type ouput = Psbt.psbt_tx_output
+type 'a global_psbt = 'a Bip174.t
 
-type psbt =
-  { inputs : input array
+type 'a psbt =
+  { global_psbt : 'a global_psbt option
+  ; inputs : input array
   ; outputs : ouput array
   }
 
-type action =
+type 'a action =
   | Set_hex of string
-  | Set_psbt of psbt
+  | Set_psbt of 'a psbt
   | Toggle_network of bool
   | Select_display_unit of string
   | Set_error of string option
 
-type state =
+type 'a state =
   { hex : string
-  ; psbt : psbt
+  ; psbt : 'a psbt
   ; is_mainnet : bool
   ; display_unit : string
   ; error : string option
@@ -45,7 +47,7 @@ let[@react.component] make () =
     useReducer
       reducer
       { hex = ""
-      ; psbt = { inputs = [||]; outputs = [||] }
+      ; psbt = { global_psbt = None; inputs = [||]; outputs = [||] }
       ; is_mainnet = true
       ; display_unit = initial_display_unit
       ; error = None
@@ -82,7 +84,7 @@ let[@react.component] make () =
       let psbt = Psbt.fromHex state.hex ~psbt_opts () in
       let inputs = Psbt.getTxInputs psbt in
       let outputs = Psbt.getTxOutputs psbt in
-      dispatch (Set_psbt { inputs; outputs })
+      dispatch (Set_psbt { inputs; outputs; global_psbt = Some psbt })
     with
     | exn ->
       let error_message = Printexc.to_string exn in
@@ -128,7 +130,7 @@ let[@react.component] make () =
     | false -> <p key=code>(string code)</p>
   in
 
-  <main className="space-y-16 w-full">
+  <main className="space-y-16 w-full pb-16">
     <div className="flex items-center justify-between py-2">
       <img src="/logo.svg" className="pointer-events-none select-none" />
       <Ui.Switch label=switch_label checked=state.is_mainnet set_checked=handle_network_change />
@@ -158,7 +160,7 @@ let[@react.component] make () =
         </button>
       </div>
     </form>
-    <Inputs inputs=state.psbt.inputs />
+    <Inputs global_psbt=state.psbt.global_psbt inputs=state.psbt.inputs />
     (match state.psbt.outputs with
      | [||] -> null
      | _ ->
@@ -183,16 +185,16 @@ let[@react.component] make () =
                     </h3>
                   </div>
                   <dl className="divide-y divide-gray-900/50">
-                    <div className="p-4 sm:grid sm:grid-cols-6 sm:gap-4">
+                    <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4">
                       <dt>(string "Value")</dt>
-                      <dd className="sm:col-span-5">
+                      <dd className="sm:col-span-3">
                         <Ui.Tooltip label=(tooltip_label output.value)
                                     trigger=(tooltip_trigger output.value) />
                       </dd>
                     </div>
-                    <div className="p-4 sm:grid sm:grid-cols-6 sm:gap-4 break-words">
+                    <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4 break-words">
                       <dt>(string "Script")</dt>
-                      <dd className="sm:col-span-5 space-y-6">
+                      <dd className="sm:col-span-3 space-y-6">
                         (match output.address with
                          | Some address ->
                            <div className="flex flex-col md:flex-row justify-between md:items-center">
