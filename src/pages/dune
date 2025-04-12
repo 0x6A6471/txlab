@@ -2,5 +2,6 @@
  (name pages)
  (modes melange)
  (libraries reason-react melange.belt melange-bitcoin-lib components utils)
- (preprocess (pps melange.ppx reason-react-ppx))
+ (preprocess
+  (pps melange.ppx reason-react-ppx))
  (modules home))

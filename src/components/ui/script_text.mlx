@@ -1,0 +1,9 @@
+open React
+
+open Utils
+
+let[@react.component] make ~text =
+  match Ops.is_op_code text with
+  | true -> <Badge key=text variant=`secondary label=text />
+  | false -> <p className="font-mono" key=text>(string text)</p>
+;;
