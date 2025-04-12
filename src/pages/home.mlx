@@ -2,6 +2,7 @@ open React
 
 open Components
 open Melange_bitcoin_lib
+open Ui
 open Utils
 
 type input = Psbt.psbt_tx_input
@@ -125,12 +126,6 @@ let[@react.component] make () =
     | _ -> parse_hex ()
   in
 
-  let script_text code =
-    match Ops.is_op_code code with
-    | true -> <Ui.Badge key=code variant=`secondary label=code />
-    | false -> <p key=code>(string code)</p>
-  in
-
   <main className="space-y-16 w-full pb-16">
     <div className="flex items-center justify-between py-2">
       <img src="/logo.svg" className="pointer-events-none select-none" />
@@ -203,11 +198,14 @@ let[@react.component] make () =
                                <Ui.Badge label=script_type />
                                <p className="text-xs">(string "lock script")</p>
                              </div>
-                             <p>(string address)</p>
+                             <p className="font-mono">(string address)</p>
                            </div>
                          | None -> null)
                         <div className="space-y-1">
-                          (split |> Array.of_list |> Array.map script_text |> React.array)
+                          (split
+                           |> Array.of_list
+                           |> Array.map (fun text -> <Script_text key=text text />)
+                           |> React.array)
                         </div>
                       </dd>
                     </div>
