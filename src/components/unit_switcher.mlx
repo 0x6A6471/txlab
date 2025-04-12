@@ -41,7 +41,7 @@ let[@react.component] make ~unit ~set_unit =
           <Dropdown_menu.Content align=`end_
                                  className="min-w-32 rounded-md bg-black p-1 will-change-[opacity,transform] data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade data-[side=right]:animate-slideLeftAndFade data-[side=top]:animate-slideDownAndFade border border-gray-900"
                                  sideOffset=5>
-            <Dropdown_menu.Item className=item_styles onSelect=(fun _ -> set_unit (fun _ -> "btc"))>
+            <Dropdown_menu.Item className=item_styles onSelect=(fun _ -> set_unit "btc")>
               <div className="inline-flex gap-x-2 items-center">
                 <Ui.Icon name="btc" variant=`filled /> (string "BTC")
               </div>
@@ -50,7 +50,7 @@ let[@react.component] make ~unit ~set_unit =
                  <span className="inline-flex w-1.5 h-1.5 rounded-full items-center justify-center bg-mint" />
                | _ -> null)
             </Dropdown_menu.Item>
-            <Dropdown_menu.Item className=item_styles onSelect=(fun _ -> set_unit (fun _ -> "sats"))>
+            <Dropdown_menu.Item className=item_styles onSelect=(fun _ -> set_unit "sats")>
               <div className="inline-flex gap-x-2 items-center">
                 <Ui.Icon name="sats" variant=`filled /> (string "Sats")
               </div>
