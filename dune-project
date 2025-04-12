@@ -1,11 +1,11 @@
 (lang dune 3.18)
 
-(name cipher)
+(name txlab)
 
 (generate_opam_files true)
 
 (source
- (github 0x6a6471/cipher))
+ (github 0x6a6471/txlab))
 
 (authors "0x6a6471")
 
@@ -37,7 +37,7 @@
 ; (license LICENSE)
 
 (package
- (name cipher)
+ (name txlab)
  (synopsis "A short synopsis")
  (allow_empty)
  (description "A longer description")
