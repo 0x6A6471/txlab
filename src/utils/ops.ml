@@ -1,6 +1,4 @@
-let is_op_code value =
-  Js.typeof value == "string" && Js.String.startsWith ~prefix:"OP_" value
-;;
+let is_op_code value = Js.typeof value == "string" && Js.String.startsWith ~prefix:"OP_" value
 
 let get_script_type_from_asm asm_string =
   let parts = String.split_on_char ' ' asm_string in
@@ -13,8 +11,7 @@ let get_script_type_from_asm asm_string =
       else if List.nth parts 1 |> String.length = 40
       then "p2wpkh"
       else "unknown"
-    | "OP_1" ->
-      if List.nth parts 1 |> String.length = 64 then "p2wsh" else "unknown"
+    | "OP_1" -> if List.nth parts 1 |> String.length = 64 then "p2wsh" else "unknown"
     | _ -> if List.nth parts 1 = "OP_CHECKSIG" then "p2pk" else "unknown"
   end
   | 3 -> begin
@@ -38,8 +35,7 @@ let get_script_type_from_asm asm_string =
       else "unknown"
   end
   | _ -> begin
-    if List.length parts >= 4
-       && List.nth parts (List.length parts - 1) = "OP_CHECKSIG"
+    if List.length parts >= 4 && List.nth parts (List.length parts - 1) = "OP_CHECKSIG"
     then "p2ms"
     else "unknown"
   end

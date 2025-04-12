@@ -1,0 +1,48 @@
+open React
+
+open Melange_bitcoin_lib
+open Utils
+
+type t = Psbt.psbt_tx_input
+
+let[@react.component] make ~inputs =
+  match inputs with
+  | [||] -> null
+  | _ ->
+    <div>
+      <div className="flex items-center justify-between mb-4 ">
+        <h2 className="inline-flex items-center gap-x-2 text-lg text-gray-50">
+          <Ui.Icon name="input" /> <span>(string "Inputs")</span>
+        </h2>
+      </div>
+      <ul className="space-y-4">
+        (Array.mapi
+           (fun index (input : t) ->
+             let txid = Converters.txid_of_uint8Array input.hash in
+             <li key=(string_of_int index) className="rounded-xl bg-gray-950 flex flex-col">
+               <div className="border-b border-gray-900/50 p-4">
+                 <h3 className="text-candle">(string @@ "inputs[" ^ string_of_int index ^ "]")</h3>
+               </div>
+               <dl className="divide-y divide-gray-900/50">
+                 <div className="p-4 sm:grid sm:grid-cols-6 sm:gap-4">
+                   <dt>(string "Previous TX ID")</dt>
+                   <dd className="sm:col-span-5">(string txid)</dd>
+                 </div>
+                 <div className="p-4 sm:grid sm:grid-cols-6 sm:gap-4">
+                   <dt>(string "Previous output index")</dt>
+                   <dd className="sm:col-span-5">(string (string_of_int input.index))</dd>
+                 </div>
+                 (match input.sequence with
+                  | Some s ->
+                    <div className="p-4 sm:grid sm:grid-cols-6 sm:gap-4 break-words">
+                      <dt>(string "Sequence")</dt>
+                      <dd className="sm:col-span-5 space-y-6">(string @@ string_of_int s)</dd>
+                    </div>
+                  | None -> null)
+               </dl>
+             </li>)
+           inputs
+         |> array)
+      </ul>
+    </div>
+;;

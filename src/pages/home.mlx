@@ -1,19 +1,27 @@
 open React
+
+open Components
 open Melange_bitcoin_lib
 open Utils
 
-type t = Psbt.psbt_tx_output
+type input = Psbt.psbt_tx_input
+type ouput = Psbt.psbt_tx_output
+
+type psbt =
+  { inputs : input array
+  ; outputs : ouput array
+  }
 
 type action =
   | Set_hex of string
-  | Set_outputs of t array
+  | Set_psbt of psbt
   | Toggle_network of bool
   | Select_display_unit of string
   | Set_error of string option
 
 type state =
   { hex : string
-  ; outputs : t array
+  ; psbt : psbt
   ; is_mainnet : bool
   ; display_unit : string
   ; error : string option
@@ -21,7 +29,7 @@ type state =
 
 let reducer state = function
   | Set_hex hex -> { state with hex }
-  | Set_outputs outputs -> { state with outputs }
+  | Set_psbt psbt -> { state with psbt }
   | Toggle_network is_mainnet -> { state with is_mainnet }
   | Select_display_unit display_unit -> { state with display_unit }
   | Set_error error -> { state with error }
@@ -37,7 +45,7 @@ let[@react.component] make () =
     useReducer
       reducer
       { hex = ""
-      ; outputs = [||]
+      ; psbt = { inputs = [||]; outputs = [||] }
       ; is_mainnet = true
       ; display_unit = initial_display_unit
       ; error = None
@@ -72,9 +80,9 @@ let[@react.component] make () =
     try
       let psbt_opts = { Types.Psbt.network = Some network; maximum_fee_rate = None } in
       let psbt = Psbt.fromHex state.hex ~psbt_opts () in
+      let inputs = Psbt.getTxInputs psbt in
       let outputs = Psbt.getTxOutputs psbt in
-      dispatch (Set_outputs outputs)
-      (* set_outputs (fun _ -> outputs) *)
+      dispatch (Set_psbt { inputs; outputs })
     with
     | exn ->
       let error_message = Printexc.to_string exn in
@@ -84,7 +92,7 @@ let[@react.component] make () =
 
   useEffect1
     (fun () ->
-      match state.outputs with
+      match state.psbt.outputs with
       | [||] -> None
       | _ ->
         parse_hex ();
@@ -93,7 +101,7 @@ let[@react.component] make () =
 
   let handle_input_change event =
     if state.error <> None then dispatch (Set_error None);
-    if state.outputs <> [||] then dispatch (Set_outputs [||]);
+    if state.psbt.outputs <> [||] then dispatch (Set_psbt { state.psbt with outputs = [||] });
 
     let value = (Event.Form.target event)##value in
     dispatch (Set_hex value)
@@ -150,17 +158,17 @@ let[@react.component] make () =
         </button>
       </div>
     </form>
-    (match state.outputs with
+    <Inputs inputs=state.psbt.inputs />
+    (match state.psbt.outputs with
      | [||] -> null
      | _ ->
        <div>
          <div className="flex items-center justify-between mb-4 ">
            <h2 className="inline-flex items-center gap-x-2 text-lg text-gray-50">
-             <Ui.Icon name="arrow-right" /> <span>(string "Outputs")</span>
+             <Ui.Icon name="output" /> <span>(string "Outputs")</span>
            </h2>
-           <Components.Unit_switcher unit=state.display_unit
-                                     set_unit=(fun new_unit ->
-                                                dispatch (Select_display_unit new_unit)) />
+           <Unit_switcher unit=state.display_unit
+                          set_unit=(fun new_unit -> dispatch (Select_display_unit new_unit)) />
          </div>
          <ul className="space-y-4">
            (Array.mapi
@@ -202,7 +210,7 @@ let[@react.component] make () =
                     </div>
                   </dl>
                 </li>)
-              state.outputs
+              state.psbt.outputs
             |> array)
          </ul>
        </div>)
