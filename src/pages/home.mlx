@@ -103,7 +103,8 @@ let[@react.component] make () =
 
   let handle_input_change event =
     if state.error <> None then dispatch (Set_error None);
-    if state.psbt.outputs <> [||] then dispatch (Set_psbt { state.psbt with outputs = [||] });
+    if state.psbt.outputs <> [||]
+    then dispatch (Set_psbt { global_psbt = None; outputs = [||]; inputs = [||] });
 
     let value = (Event.Form.target event)##value in
     dispatch (Set_hex value)

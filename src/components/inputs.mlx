@@ -46,31 +46,30 @@ let[@react.component] make ~(global_psbt : 'a Bip174.t option) ~inputs =
                   | None -> null)
                  (match global_psbt with
                   | Some g ->
-                    Array.mapi
-                      (fun index (global_input : Bip174.psbt_input) ->
-                        match global_input.witnessScript with
-                        | Some script ->
-                          let asm = Script.toASM (Script.BufferChunks script) in
-                          let script_type = Ops.get_script_type_from_asm asm in
-                          let split = String.split_on_char ' ' asm in
-                          <div key=(string_of_int index)
-                               className="p-4 sm:grid sm:grid-cols-4 sm:gap-4 break-words">
-                            <dt>(string "Script")</dt>
-                            <dd className="sm:col-span-3 space-y-6">
-                              <div className="flex flex-col md:flex-row justify-between md:items-center">
-                                <div className="flex items-center space-x-1">
-                                  <Ui.Badge label=script_type />
-                                  <p className="text-xs">(string "witness script")</p>
-                                </div>
+                    if index < Array.length g.data.inputs
+                    then (
+                      let global_input = g.data.inputs.(index) in
+                      match global_input.witnessScript with
+                      | Some script ->
+                        let asm = Script.toASM (Script.BufferChunks script) in
+                        let script_type = Ops.get_script_type_from_asm asm in
+                        let split = String.split_on_char ' ' asm in
+                        <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4 break-words">
+                          <dt>(string "Script")</dt>
+                          <dd className="sm:col-span-3 space-y-6">
+                            <div className="flex flex-col md:flex-row justify-between md:items-center">
+                              <div className="flex items-center space-x-1">
+                                <Ui.Badge label=script_type />
+                                <p className="text-xs">(string "witness script")</p>
                               </div>
-                              <div className="space-y-1 flex flex-col items-start">
-                                (split |> Array.of_list |> Array.map script_text |> React.array)
-                              </div>
-                            </dd>
-                          </div>
-                        | None -> null)
-                      g.data.inputs
-                    |> array
+                            </div>
+                            <div className="space-y-1 flex flex-col items-start">
+                              (split |> Array.of_list |> Array.map script_text |> React.array)
+                            </div>
+                          </dd>
+                        </div>
+                      | None -> null)
+                    else null
                   | None -> null)
                </dl>
              </li>)
@@ -79,3 +78,31 @@ let[@react.component] make ~(global_psbt : 'a Bip174.t option) ~inputs =
       </ul>
     </div>
 ;;
+(* (match global_psbt with *)
+(*                   | Some g -> *)
+(*                     Array.mapi *)
+(*                       (fun index (global_input : Bip174.psbt_input) -> *)
+(*                         match global_input.witnessScript with *)
+(*                         | Some script -> *)
+(*                           let asm = Script.toASM (Script.BufferChunks script) in *)
+(*                           let script_type = Ops.get_script_type_from_asm asm in *)
+(*                           let split = String.split_on_char ' ' asm in *)
+(*                           <div key=(string_of_int index) *)
+(*                                className="p-4 sm:grid sm:grid-cols-4 sm:gap-4 break-words"> *)
+(*                             <dt>(string "Script")</dt> *)
+(*                             <dd className="sm:col-span-3 space-y-6"> *)
+(*                               <div className="flex flex-col md:flex-row justify-between md:items-center"> *)
+(*                                 <div className="flex items-center space-x-1"> *)
+(*                                   <Ui.Badge label=script_type /> *)
+(*                                   <p className="text-xs">(string "witness script")</p> *)
+(*                                 </div> *)
+(*                               </div> *)
+(*                               <div className="space-y-1 flex flex-col items-start"> *)
+(*                                 (split |> Array.of_list |> Array.map script_text |> React.array) *)
+(*                               </div> *)
+(*                             </dd> *)
+(*                           </div> *)
+(*                         | None -> null) *)
+(*                       g.data.inputs *)
+(*                     |> array *)
+(*                   | None -> null) *)
