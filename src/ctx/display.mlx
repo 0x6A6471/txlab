@@ -31,7 +31,7 @@ module DisplayProvider = struct
     let initial_network =
       match Local_storage.get_item "network" with
       | Some n -> if n = "mainnet" then Networks.mainnet else Networks.testnet
-      | None -> Networks.mainnet
+      | None -> Networks.testnet
     in
     let initial_unit =
       match Local_storage.get_item "unit" with
@@ -50,18 +50,18 @@ module DisplayProvider = struct
         None)
       [| unit |];
     let toggle_network () =
-      match network = Networks.mainnet with
+      match network = Networks.testnet with
       | true ->
-        Local_storage.set_item "network" "testnet";
-        set_network (fun _ -> Networks.testnet)
-      | false ->
         Local_storage.set_item "network" "mainnet";
         set_network (fun _ -> Networks.mainnet)
+      | false ->
+        Local_storage.set_item "network" "testnet";
+        set_network (fun _ -> Networks.testnet)
     in
     useEffect0 (fun () ->
       begin
         match Local_storage.get_item "network" with
-        | None -> Local_storage.set_item "network" "mainnet"
+        | None -> Local_storage.set_item "network" "testnet"
         | _ -> ()
       end;
       None);
