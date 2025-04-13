@@ -14,14 +14,12 @@ type 'a action =
   | Set_hex of string
   | Set_psbt of 'a psbt
   | Toggle_network of bool
-  | Select_display_unit of string
   | Set_error of string option
 
 type 'a state =
   { hex : string
   ; psbt : 'a psbt
   ; is_mainnet : bool
-  ; display_unit : string
   ; error : string option
   }
 

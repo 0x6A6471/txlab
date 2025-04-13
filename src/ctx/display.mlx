@@ -1,0 +1,41 @@
+open React
+
+open Utils
+
+type context_value =
+  { unit : string
+  ; set_unit : string -> unit
+  }
+
+let init = { unit = "sats"; set_unit = (fun _ -> ()) }
+
+let display_context = createContext init
+
+module Provider = struct
+  include Context
+
+  let make = provider display_context
+end
+
+module DisplayProvider = struct
+  let[@react.component] make ~children =
+    let initial_unit =
+      match Local_storage.get_item "unit" with
+      | Some unit -> if unit = "btc" then "btc" else "sats"
+      | None -> "sats"
+    in
+    let unit, set_unit = useState (fun _ -> initial_unit) in
+    useEffect1
+      (fun () ->
+        begin
+          match unit with
+          | "btc" -> Local_storage.set_item "unit" "btc"
+          | _ -> Local_storage.set_item "unit" "sats"
+        end;
+        None)
+      [| unit |];
+    let handle_unit_change new_unit = set_unit (fun _ -> new_unit) in
+    let value = { unit; set_unit = handle_unit_change } in
+    <Provider value>children</Provider>
+  ;;
+end

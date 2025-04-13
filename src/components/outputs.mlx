@@ -6,15 +6,16 @@ open Utils
 
 type t = Psbt.psbt_tx_output
 
-let[@react.component] make ~outputs ~display_unit ~set_display_unit =
+let[@react.component] make ~outputs =
+  let display = useContext Ctx.Display.display_context in
   let tooltip_trigger value =
-    match display_unit with
+    match display.unit with
     | "btc" -> Number_fns.btc_of_sats value ^ " BTC"
     | _ -> Js.Bigint.toString value ^ " sats"
   in
 
   let tooltip_label value =
-    match display_unit with
+    match display.unit with
     | "btc" -> Js.Bigint.toString value ^ " sats"
     | _ -> Number_fns.btc_of_sats value ^ " BTC"
   in
@@ -26,7 +27,7 @@ let[@react.component] make ~outputs ~display_unit ~set_display_unit =
         <h2 className="inline-flex items-center gap-x-2 text-lg text-gray-50">
           <Ui.Icon name="output" /> <span>(string "Outputs")</span>
         </h2>
-        <Unit_switcher unit=display_unit set_unit=set_display_unit />
+        <Unit_switcher />
       </div>
       <ul className="space-y-4">
         (Array.mapi

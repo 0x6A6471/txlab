@@ -18,14 +18,12 @@ type 'a action =
   | Set_hex of string
   | Set_psbt of 'a psbt
   | Toggle_network of bool
-  | Select_display_unit of string
   | Set_error of string option
 
 type 'a state =
   { hex : string
   ; psbt : 'a psbt
   ; is_mainnet : bool
-  ; display_unit : string
   ; error : string option
   }
 
@@ -33,23 +31,16 @@ let reducer state = function
   | Set_hex hex -> { state with hex }
   | Set_psbt psbt -> { state with psbt }
   | Toggle_network is_mainnet -> { state with is_mainnet }
-  | Select_display_unit display_unit -> { state with display_unit }
   | Set_error error -> { state with error }
 ;;
 
 let[@react.component] make () =
-  let initial_display_unit =
-    match Local_storage.get_item "unit" with
-    | Some unit -> if unit = "btc" then "btc" else "sats"
-    | None -> "sats"
-  in
   let state, dispatch =
     useReducer
       reducer
       { hex = ""
       ; psbt = { global_psbt = None; inputs = [||]; outputs = [||] }
       ; is_mainnet = true
-      ; display_unit = initial_display_unit
       ; error = None
       }
   in
@@ -145,8 +136,6 @@ let[@react.component] make () =
       </div>
     </form>
     <Inputs global_psbt=state.psbt.global_psbt inputs=state.psbt.inputs />
-    <Outputs outputs=state.psbt.outputs
-             display_unit=state.display_unit
-             set_display_unit=(fun new_unit -> dispatch (Select_display_unit new_unit)) />
+    <Outputs outputs=state.psbt.outputs />
   </div>
 ;;

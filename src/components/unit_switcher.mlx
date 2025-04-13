@@ -1,22 +1,12 @@
 open React
 open Melange_radix_ui
-open Utils
 
-let[@react.component] make ~unit ~set_unit =
+let[@react.component] make () =
+  let display = useContext Ctx.Display.display_context in
   let is_open, set_is_open = useState (fun _ -> false) in
 
-  useEffect1
-    (fun () ->
-      begin
-        match unit with
-        | "btc" -> Local_storage.set_item "unit" "btc"
-        | _ -> Local_storage.set_item "unit" "sats"
-      end;
-      None)
-    [| unit |];
-
   let icon =
-    match unit with
+    match display.unit with
     | "btc" -> <Ui.Icon name="btc" variant=`filled />
     | _ -> <Ui.Icon name="sats" variant=`filled />
   in
@@ -41,20 +31,20 @@ let[@react.component] make ~unit ~set_unit =
           <Dropdown_menu.Content align=`end_
                                  className="min-w-32 rounded-md bg-black p-1 will-change-[opacity,transform] data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade data-[side=right]:animate-slideLeftAndFade data-[side=top]:animate-slideDownAndFade border border-gray-900"
                                  sideOffset=5>
-            <Dropdown_menu.Item className=item_styles onSelect=(fun _ -> set_unit "btc")>
+            <Dropdown_menu.Item className=item_styles onSelect=(fun _ -> display.set_unit "btc")>
               <div className="inline-flex gap-x-2 items-center">
                 <Ui.Icon name="btc" variant=`filled /> (string "BTC")
               </div>
-              (match unit with
+              (match display.unit with
                | "btc" ->
                  <span className="inline-flex w-1.5 h-1.5 rounded-full items-center justify-center bg-mint" />
                | _ -> null)
             </Dropdown_menu.Item>
-            <Dropdown_menu.Item className=item_styles onSelect=(fun _ -> set_unit "sats")>
+            <Dropdown_menu.Item className=item_styles onSelect=(fun _ -> display.set_unit "sats")>
               <div className="inline-flex gap-x-2 items-center">
                 <Ui.Icon name="sats" variant=`filled /> (string "Sats")
               </div>
-              (match unit with
+              (match display.unit with
                | "sats" ->
                  <span className="inline-flex w-1.5 h-1.5 rounded-full items-center justify-center bg-mint" />
                | _ -> null)
