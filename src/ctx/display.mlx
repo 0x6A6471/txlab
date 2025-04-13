@@ -40,7 +40,6 @@ module DisplayProvider = struct
     in
     let network, set_network = useState (fun _ -> initial_network) in
     let unit, set_unit = useState (fun _ -> initial_unit) in
-    Js.log2 "network: " network;
     useEffect1
       (fun () ->
         begin
