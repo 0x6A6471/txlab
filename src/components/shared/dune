@@ -1,0 +1,7 @@
+(library
+ (name shared)
+ (modes melange)
+ (libraries reason-react melange.belt ui)
+ (preprocess
+  (pps melange.ppx reason-react-ppx))
+ (modules layout))

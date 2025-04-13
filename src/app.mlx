@@ -1,9 +1,11 @@
 open React
-open Pages
 
 let[@react.component] make () =
   let url = ReasonReactRouter.useUrl () in
-  match url.path with
-  | [] -> <Home />
-  | _ -> <h1>(string "404")</h1>
+
+  <Shared.Layout>
+    (match url.path with
+     | [] -> <Pages.Home />
+     | _ -> <h1>(string "404")</h1>)
+  </Shared.Layout>
 ;;

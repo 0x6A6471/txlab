@@ -1,0 +1,22 @@
+open React
+
+let[@react.component] make ~children =
+  <div className="flex flex-col min-h-screen">
+    <main className="space-y-16 w-full pb-16">children</main>
+    <footer className="p-4 mt-auto flex items-center justify-between  text-sm text-gray-700 ">
+      <a href="https://www.0x6a6471.com"
+         target="_blank"
+         rel="noopener noreferrer"
+         className="hover:text-gray-500 focus-visible:text-gray-500">
+        (string "Crafted by ")
+        <img src="/images/0x6a6471.svg" className="inline-block h-6 w-auto rounded-full" />
+      </a>
+      <a href="https://github.com/0x6A6471/txlab"
+         target="_blank"
+         rel="noopener noreferrer"
+         className="inline-block hover:text-[#6cc644] focus-visible:text-[#6cc644]">
+        <Ui.Icon name="github" variant=`filled size="24" />
+      </a>
+    </footer>
+  </div>
+;;
