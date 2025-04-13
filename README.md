@@ -1,7 +1,5 @@
 <h1 align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="public/logo.svg?sanitize=true">
-  </picture>
+  <img src="public/logo.svg?sanitize=true" alt="Logo">
   <br>
     txlab
 </h1>
