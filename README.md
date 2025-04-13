@@ -1,7 +1,5 @@
 <h1 align="center">
   <img src="public/logo.svg?sanitize=true" alt="Logo">
-  <br>
-    txlab
 </h1>
 
 ### Overview
