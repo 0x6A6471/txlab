@@ -1,0 +1,76 @@
+open React
+open Melange_bitcoin_lib
+
+open Ui
+open Utils
+
+type t = Psbt.psbt_tx_output
+
+let[@react.component] make ~outputs ~display_unit ~set_display_unit =
+  let tooltip_trigger value =
+    match display_unit with
+    | "btc" -> Number_fns.btc_of_sats value ^ " BTC"
+    | _ -> Js.Bigint.toString value ^ " sats"
+  in
+
+  let tooltip_label value =
+    match display_unit with
+    | "btc" -> Js.Bigint.toString value ^ " sats"
+    | _ -> Number_fns.btc_of_sats value ^ " BTC"
+  in
+  match outputs with
+  | [||] -> null
+  | _ ->
+    <div>
+      <div className="flex items-center justify-between mb-4 ">
+        <h2 className="inline-flex items-center gap-x-2 text-lg text-gray-50">
+          <Ui.Icon name="output" /> <span>(string "Outputs")</span>
+        </h2>
+        <Unit_switcher unit=display_unit set_unit=set_display_unit />
+      </div>
+      <ul className="space-y-4">
+        (Array.mapi
+           (fun index (output : t) ->
+             let asm = Script.toASM (Script.BufferChunks output.script) in
+             let script_type = Ops.get_script_type_from_asm asm in
+             let split = String.split_on_char ' ' asm in
+             <li key=(string_of_int index) className="rounded-xl bg-gray-950 flex flex-col">
+               <div className="border-b border-gray-900/50 p-4">
+                 <h3 className="text-candle">(string @@ "outputs[" ^ string_of_int index ^ "]")</h3>
+               </div>
+               <dl className="divide-y divide-gray-900/50">
+                 <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4">
+                   <dt>(string "Value")</dt>
+                   <dd className="sm:col-span-3">
+                     <Ui.Tooltip label=(tooltip_label output.value)
+                                 trigger=(tooltip_trigger output.value) />
+                   </dd>
+                 </div>
+                 <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4 break-words">
+                   <dt>(string "Script")</dt>
+                   <dd className="sm:col-span-3 space-y-6">
+                     (match output.address with
+                      | Some address ->
+                        <div className="flex flex-col md:flex-row justify-between md:items-center">
+                          <div className="flex items-center space-x-1">
+                            <Ui.Badge label=script_type />
+                            <p className="text-xs">(string "lock script")</p>
+                          </div>
+                          <p className="font-mono">(string address)</p>
+                        </div>
+                      | None -> null)
+                     <div className="space-y-1">
+                       (split
+                        |> Array.of_list
+                        |> Array.map (fun text -> <Script_text key=text text />)
+                        |> React.array)
+                     </div>
+                   </dd>
+                 </div>
+               </dl>
+             </li>)
+           outputs
+         |> array)
+      </ul>
+    </div>
+;;

@@ -4,4 +4,4 @@
  (libraries reason-react melange.belt melange-radix-ui ui utils melange-bitcoin-lib)
  (preprocess
   (pps melange.ppx reason-react-ppx))
- (modules inputs unit_switcher))
+ (modules inputs outputs unit_switcher))
