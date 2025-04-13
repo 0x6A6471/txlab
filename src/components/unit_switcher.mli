@@ -1,1 +1,1 @@
-val make : unit:string -> set_unit:(string -> unit) -> React.element [@@react.component]
+val make : unit -> React.element [@@react.component]

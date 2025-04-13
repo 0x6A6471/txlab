@@ -1,8 +1,7 @@
 open React
+open Melange_bitcoin_lib
 
 open Components
-open Melange_bitcoin_lib
-open Utils
 
 type input = Psbt.psbt_tx_input
 type ouput = Psbt.psbt_tx_output
@@ -17,59 +16,31 @@ type 'a psbt =
 type 'a action =
   | Set_hex of string
   | Set_psbt of 'a psbt
-  | Toggle_network of bool
-  | Select_display_unit of string
   | Set_error of string option
 
 type 'a state =
   { hex : string
   ; psbt : 'a psbt
-  ; is_mainnet : bool
-  ; display_unit : string
   ; error : string option
   }
 
 let reducer state = function
   | Set_hex hex -> { state with hex }
   | Set_psbt psbt -> { state with psbt }
-  | Toggle_network is_mainnet -> { state with is_mainnet }
-  | Select_display_unit display_unit -> { state with display_unit }
   | Set_error error -> { state with error }
 ;;
 
 let[@react.component] make () =
-  let initial_display_unit =
-    match Local_storage.get_item "unit" with
-    | Some unit -> if unit = "btc" then "btc" else "sats"
-    | None -> "sats"
-  in
+  let display = useContext Ctx.Display.display_context in
   let state, dispatch =
     useReducer
       reducer
-      { hex = ""
-      ; psbt = { global_psbt = None; inputs = [||]; outputs = [||] }
-      ; is_mainnet = true
-      ; display_unit = initial_display_unit
-      ; error = None
-      }
+      { hex = ""; psbt = { global_psbt = None; inputs = [||]; outputs = [||] }; error = None }
   in
-  let network = if state.is_mainnet then Networks.mainnet else Networks.testnet in
-  let switch_label = if state.is_mainnet then "Mainnet" else "Testnet" in
-
-  useEffect0 (fun () ->
-    begin
-      match Local_storage.get_item "network" with
-      | Some "testnet" -> dispatch (Toggle_network false)
-      | Some "mainnet" -> dispatch (Toggle_network true)
-      | _ ->
-        Local_storage.set_item "network" "mainnet";
-        ()
-    end;
-    None);
 
   let parse_hex () =
     try
-      let psbt_opts = { Types.Psbt.network = Some network; maximum_fee_rate = None } in
+      let psbt_opts = { Types.Psbt.network = Some display.network; maximum_fee_rate = None } in
       let psbt = Psbt.fromHex state.hex ~psbt_opts () in
       let inputs = Psbt.getTxInputs psbt in
       let outputs = Psbt.getTxOutputs psbt in
@@ -88,8 +59,7 @@ let[@react.component] make () =
       | _ ->
         parse_hex ();
         None)
-    [| state.is_mainnet |];
-
+    [| display.network |];
   let handle_input_change event =
     if state.error <> None then dispatch (Set_error None);
     if state.psbt.outputs <> [||]
@@ -97,14 +67,6 @@ let[@react.component] make () =
 
     let value = (Event.Form.target event)##value in
     dispatch (Set_hex value)
-  in
-
-  let handle_network_change _ =
-    let new_is_mainnet = not state.is_mainnet in
-    if new_is_mainnet
-    then Local_storage.set_item "network" "mainnet"
-    else Local_storage.set_item "network" "testnet";
-    dispatch (Toggle_network new_is_mainnet)
   in
 
   let handle_submit e =
@@ -116,8 +78,7 @@ let[@react.component] make () =
 
   <div className="space-y-16 w-full">
     <div className="flex items-center justify-between py-2">
-      <img src="/logo.svg" className="pointer-events-none select-none" />
-      <Ui.Switch label=switch_label checked=state.is_mainnet set_checked=handle_network_change />
+      <img src="/logo.svg" className="pointer-events-none select-none" /> <Ui.Switch />
     </div>
     <form onSubmit=handle_submit>
       <div>
@@ -145,8 +106,6 @@ let[@react.component] make () =
       </div>
     </form>
     <Inputs global_psbt=state.psbt.global_psbt inputs=state.psbt.inputs />
-    <Outputs outputs=state.psbt.outputs
-             display_unit=state.display_unit
-             set_display_unit=(fun new_unit -> dispatch (Select_display_unit new_unit)) />
+    <Outputs outputs=state.psbt.outputs />
   </div>
 ;;
