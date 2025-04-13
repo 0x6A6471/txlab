@@ -1,6 +1,6 @@
-<h1 align="center">
+<p align="center">
   <img src="public/logo.svg?sanitize=true" alt="Logo">
-</h1>
+</p>
 
 # Overview
 txlab is a set of tools for exploring and analyzing bitcoin transactions.
