@@ -1,13 +1,22 @@
 open React
+open Melange_bitcoin_lib
 
 open Utils
 
 type context_value =
-  { unit : string
+  { network : Networks.t
+  ; toggle_network : unit -> unit
+  ; unit : string
   ; set_unit : string -> unit
   }
 
-let init = { unit = "sats"; set_unit = (fun _ -> ()) }
+let init =
+  { network = Networks.testnet
+  ; toggle_network = (fun _ -> ())
+  ; unit = "sats"
+  ; set_unit = (fun _ -> ())
+  }
+;;
 
 let display_context = createContext init
 
@@ -19,12 +28,19 @@ end
 
 module DisplayProvider = struct
   let[@react.component] make ~children =
+    let initial_network =
+      match Local_storage.get_item "network" with
+      | Some n -> if n = "mainnet" then Networks.mainnet else Networks.testnet
+      | None -> Networks.mainnet
+    in
     let initial_unit =
       match Local_storage.get_item "unit" with
       | Some unit -> if unit = "btc" then "btc" else "sats"
       | None -> "sats"
     in
+    let network, set_network = useState (fun _ -> initial_network) in
     let unit, set_unit = useState (fun _ -> initial_unit) in
+    Js.log2 "network: " network;
     useEffect1
       (fun () ->
         begin
@@ -34,8 +50,24 @@ module DisplayProvider = struct
         end;
         None)
       [| unit |];
-    let handle_unit_change new_unit = set_unit (fun _ -> new_unit) in
-    let value = { unit; set_unit = handle_unit_change } in
+    let toggle_network () =
+      match network = Networks.mainnet with
+      | true ->
+        Local_storage.set_item "network" "testnet";
+        set_network (fun _ -> Networks.testnet)
+      | false ->
+        Local_storage.set_item "network" "mainnet";
+        set_network (fun _ -> Networks.mainnet)
+    in
+    useEffect0 (fun () ->
+      begin
+        match Local_storage.get_item "network" with
+        | None -> Local_storage.set_item "network" "mainnet"
+        | _ -> ()
+      end;
+      None);
+    let handle_unit_change unit = set_unit (fun _ -> unit) in
+    let value = { network; toggle_network; unit; set_unit = handle_unit_change } in
     <Provider value>children</Provider>
   ;;
 end

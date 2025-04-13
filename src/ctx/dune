@@ -1,7 +1,14 @@
 (library
  (name ctx)
  (modes melange)
- (libraries reason-react melange.belt utils)
- (preprocess (pps melange.ppx reason-react-ppx))
+ (libraries
+  ; react
+  reason-react
+  melange.belt
+  ; third-party
+  melange-bitcoin-lib
+  ; local
+  utils)
+ (preprocess
+  (pps melange.ppx reason-react-ppx))
  (modules display))
-

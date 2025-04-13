@@ -1,13 +1,17 @@
 (library
  (name components)
  (modes melange)
- (libraries 
-   ; react
-   reason-react melange.belt 
-   ; third-party
-   melange-radix-ui melange-bitcoin-lib
-   ; local
-   ctx ui utils)
+ (libraries
+  ; react
+  reason-react
+  melange.belt
+  ; third-party
+  melange-radix-ui
+  melange-bitcoin-lib
+  ; local
+  ctx
+  ui
+  utils)
  (preprocess
   (pps melange.ppx reason-react-ppx))
  (modules inputs outputs unit_switcher))

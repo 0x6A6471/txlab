@@ -1,7 +1,15 @@
 (library
  (name ui)
  (modes melange)
- (libraries reason-react melange.belt melange-radix-ui utils)
+ (libraries
+  ; react
+  reason-react
+  melange.belt
+  ; third-party
+  melange-radix-ui
+  ; local
+  ctx
+  utils)
  (preprocess
   (pps melange.ppx reason-react-ppx))
  (modules badge icon script_text switch tooltip))

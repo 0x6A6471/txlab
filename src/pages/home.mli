@@ -13,13 +13,11 @@ type 'a psbt =
 type 'a action =
   | Set_hex of string
   | Set_psbt of 'a psbt
-  | Toggle_network of bool
   | Set_error of string option
 
 type 'a state =
   { hex : string
   ; psbt : 'a psbt
-  ; is_mainnet : bool
   ; error : string option
   }
 
