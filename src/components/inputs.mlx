@@ -4,9 +4,10 @@ open Melange_bitcoin_lib
 open Ui
 open Utils
 
-type t = Psbt.psbt_tx_input
+type input = Psbt.psbt_tx_input
+type 'a global_psbt = 'a Bip174.t
 
-let[@react.component] make ~(global_psbt : 'a Bip174.t option) ~inputs =
+let[@react.component] make ~global_psbt ~inputs =
   match inputs with
   | [||] -> null
   | _ ->
@@ -18,7 +19,7 @@ let[@react.component] make ~(global_psbt : 'a Bip174.t option) ~inputs =
       </div>
       <ul className="space-y-4">
         (Array.mapi
-           (fun index (input : t) ->
+           (fun index (input : input) ->
              let txid = Converters.txid_of_uint8Array input.hash in
              <li key=(string_of_int index) className="rounded-xl bg-gray-950 flex flex-col">
                <div className="border-b border-gray-900/50 p-4">
@@ -41,7 +42,7 @@ let[@react.component] make ~(global_psbt : 'a Bip174.t option) ~inputs =
                     </div>
                   | None -> null)
                  (match global_psbt with
-                  | Some g ->
+                  | Some (g : 'a global_psbt) ->
                     if index < Array.length g.data.inputs
                     then (
                       let global_input = g.data.inputs.(index) in
