@@ -3,7 +3,7 @@ open React
 let[@react.component] make ~children =
   <div className="flex flex-col min-h-screen">
     <main className="space-y-16 w-full pb-16">children</main>
-    <footer className="p-4 mt-auto flex items-center justify-between  text-sm text-gray-700 ">
+    <footer className="py-4 mt-auto flex items-center justify-between text-sm text-gray-700 ">
       <a href="https://www.0x6a6471.com"
          target="_blank"
          rel="noopener noreferrer"

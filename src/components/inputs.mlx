@@ -26,7 +26,7 @@ let[@react.component] make ~global_psbt ~inputs =
                  <h3 className="text-candle">(string @@ "inputs[" ^ string_of_int index ^ "]")</h3>
                </div>
                <dl className="divide-y divide-gray-900/50">
-                 <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4">
+                 <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4 break-words">
                    <dt>(string "Previous TX ID")</dt>
                    <dd className="sm:col-span-3 font-mono">(string txid)</dd>
                  </div>
@@ -36,7 +36,7 @@ let[@react.component] make ~global_psbt ~inputs =
                  </div>
                  (match input.sequence with
                   | Some s ->
-                    <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4 break-words">
+                    <div className="p-4 sm:grid sm:grid-cols-4 sm:gap-4">
                       <dt>(string "Sequence")</dt>
                       <dd className="sm:col-span-3 space-y-6">(string @@ string_of_int s)</dd>
                     </div>
@@ -60,7 +60,7 @@ let[@react.component] make ~global_psbt ~inputs =
                                 <p className="text-xs">(string "witness script")</p>
                               </div>
                             </div>
-                            <div className="space-y-1 flex flex-col items-start">
+                            <div className="space-y-1">
                               (split
                                |> Array.of_list
                                |> Array.map (fun text -> <Script_text key=text text />)
