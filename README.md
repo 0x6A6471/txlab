@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/logo.svg?sanitize=true" alt="txlab logo" width="300">
+  <img src="public/logo.svg?sanitize=true" alt="txlab logo" width="200">
 </p>
 
 # Overview
