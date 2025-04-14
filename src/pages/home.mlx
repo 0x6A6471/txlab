@@ -1,5 +1,6 @@
 open React
 open Melange_bitcoin_lib
+open Utils
 
 open Components
 
@@ -39,17 +40,22 @@ let[@react.component] make () =
   in
 
   let parse_hex () =
-    try
-      let psbt_opts = { Types.Psbt.network = Some display.network; maximum_fee_rate = None } in
-      let psbt = Psbt.fromHex state.hex ~psbt_opts () in
+    let process_psbt psbt =
       let inputs = Psbt.getTxInputs psbt in
       let outputs = Psbt.getTxOutputs psbt in
       dispatch (Set_psbt { inputs; outputs; global_psbt = Some psbt })
+    in
+    try
+      let psbt_opts = { Types.Psbt.network = Some display.network; maximum_fee_rate = None } in
+      match state.hex with
+      | hex when Validators.is_hex hex -> Psbt.fromHex hex ~psbt_opts () |> process_psbt
+      | b64 when Validators.is_base64 b64 -> Psbt.fromBase64 b64 ~psbt_opts () |> process_psbt
+      | _ -> dispatch (Set_error (Some "Not a valid hex or base64 string"))
     with
     | exn ->
       let error_message = Printexc.to_string exn in
       Js.log2 "Error parsing hex: " error_message;
-      dispatch (Set_error (Some "Invalid transaction hex"))
+      dispatch (Set_error (Some "Invalid input. Not a valid hex or base64 string"))
   in
 
   useEffect1
@@ -72,7 +78,7 @@ let[@react.component] make () =
   let handle_submit e =
     Event.Form.preventDefault e;
     match state.hex with
-    | "" -> dispatch (Set_error (Some "A transaction hex is required"))
+    | "" -> dispatch (Set_error (Some "Enter a transaction hex or base64 string"))
     | _ -> parse_hex ()
   in
 
@@ -82,7 +88,7 @@ let[@react.component] make () =
     </div>
     <form onSubmit=handle_submit>
       <div>
-        <label htmlFor="hex" className="text-gray-100">(string "Transaction hex")</label>
+        <label htmlFor="hex" className="text-gray-100">(string "Hex or base64 string")</label>
         <div>
           <textarea id="hex"
                     name="hex"
