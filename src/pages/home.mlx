@@ -49,7 +49,7 @@ let[@react.component] make () =
       let psbt_opts = { Types.Psbt.network = Some display.network; maximum_fee_rate = None } in
       match state.hex with
       | hex when Validators.is_hex hex -> Psbt.fromHex hex ~psbt_opts () |> process_psbt
-      | b64 when Validators.is_base64 b64 -> Psbt.fromBase64 b64 ~psbt_opts () |> process_psbt
+      | b64 when Validators.is_base64_psbt b64 -> Psbt.fromBase64 b64 ~psbt_opts () |> process_psbt
       | _ -> dispatch (Set_error (Some "Not a valid hex or base64 string"))
     with
     | exn ->

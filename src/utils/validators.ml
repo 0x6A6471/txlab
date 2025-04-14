@@ -6,7 +6,11 @@ let is_hex string =
     string
 ;;
 
-let is_base64 string =
+let is_base64_psbt string =
+  (* PSBT magic bytes *)
+  String.length string >= 6
+  && String.sub string 0 6 = "cHNidP"
+  &&
   let len = String.length string in
   len mod 4 = 0
   && String.for_all
@@ -15,8 +19,14 @@ let is_base64 string =
          | _ -> false)
        string
   &&
-  let rec valid_padding i =
-    if i < 0 then true else if string.[i] = '=' then valid_padding (i - 1) else i >= len - 3
+  (* padding can only appear at the end and be at most 2 characters *)
+  let padding_count =
+    if len >= 2 && string.[len - 1] = '=' && string.[len - 2] = '='
+    then 2
+    else if len >= 1 && string.[len - 1] = '='
+    then 1
+    else 0
   in
-  valid_padding (len - 1)
+  (* Verify no '=' characters appear except at the end *)
+  padding_count = 0 || String.index_from_opt string 0 '=' = Some (len - padding_count)
 ;;
