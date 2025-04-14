@@ -27,8 +27,9 @@ This project is inspired by the following open-source projects:
 ### Design
 - [T. Costa's Oscura theme](https://x.com/tcosta_co/status/1902043771493085400) for the color scheme
 - [Bitcoin Design](https://bitcoin.design) for the icons and bitcoin design standards
+- [Radix](https://www.radix-ui.com/primitives) for the components via [melange-radix-ui](https://github.com/0x6A6471/melange-radix-ui) bindings
 
-### Roadmap
+# Roadmap
 - PSBT
 - Transactions
 - Payments
