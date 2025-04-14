@@ -11,12 +11,12 @@ type 'a psbt =
   }
 
 type 'a action =
-  | Set_hex of string
+  | Set_user_input of string
   | Set_psbt of 'a psbt
   | Set_error of string option
 
 type 'a state =
-  { hex : string
+  { user_input : string
   ; psbt : 'a psbt
   ; error : string option
   }
