@@ -15,18 +15,18 @@ type 'a psbt =
   }
 
 type 'a action =
-  | Set_hex of string
+  | Set_user_input of string
   | Set_psbt of 'a psbt
   | Set_error of string option
 
 type 'a state =
-  { hex : string
+  { user_input : string
   ; psbt : 'a psbt
   ; error : string option
   }
 
 let reducer state = function
-  | Set_hex hex -> { state with hex }
+  | Set_user_input user_input -> { state with user_input }
   | Set_psbt psbt -> { state with psbt }
   | Set_error error -> { state with error }
 ;;
@@ -36,10 +36,13 @@ let[@react.component] make () =
   let state, dispatch =
     useReducer
       reducer
-      { hex = ""; psbt = { global_psbt = None; inputs = [||]; outputs = [||] }; error = None }
+      { user_input = ""
+      ; psbt = { global_psbt = None; inputs = [||]; outputs = [||] }
+      ; error = None
+      }
   in
 
-  let parse_hex () =
+  let parse_user_input () =
     let process_psbt psbt =
       let inputs = Psbt.getTxInputs psbt in
       let outputs = Psbt.getTxOutputs psbt in
@@ -47,14 +50,14 @@ let[@react.component] make () =
     in
     try
       let psbt_opts = { Types.Psbt.network = Some display.network; maximum_fee_rate = None } in
-      match state.hex with
+      match state.user_input with
       | hex when Validators.is_hex hex -> Psbt.fromHex hex ~psbt_opts () |> process_psbt
       | b64 when Validators.is_base64_psbt b64 -> Psbt.fromBase64 b64 ~psbt_opts () |> process_psbt
       | _ -> dispatch (Set_error (Some "Not a valid hex or base64 string"))
     with
     | exn ->
       let error_message = Printexc.to_string exn in
-      Js.log2 "Error parsing hex: " error_message;
+      Js.log2 "Error parsing user_input: " error_message;
       dispatch (Set_error (Some "Invalid input. Not a valid hex or base64 string"))
   in
 
@@ -63,7 +66,7 @@ let[@react.component] make () =
       match state.psbt.outputs with
       | [||] -> None
       | _ ->
-        parse_hex ();
+        parse_user_input ();
         None)
     [| display.network |];
   let handle_input_change event =
@@ -72,14 +75,14 @@ let[@react.component] make () =
     then dispatch (Set_psbt { global_psbt = None; outputs = [||]; inputs = [||] });
 
     let value = (Event.Form.target event)##value in
-    dispatch (Set_hex value)
+    dispatch (Set_user_input value)
   in
 
   let handle_submit e =
     Event.Form.preventDefault e;
-    match state.hex with
+    match state.user_input with
     | "" -> dispatch (Set_error (Some "Enter a transaction hex or base64 string"))
-    | _ -> parse_hex ()
+    | _ -> parse_user_input ()
   in
 
   <div className="space-y-16 w-full">
@@ -88,10 +91,10 @@ let[@react.component] make () =
     </div>
     <form onSubmit=handle_submit>
       <div>
-        <label htmlFor="hex" className="text-gray-100">(string "Hex or base64 string")</label>
+        <label htmlFor="user-input" className="text-gray-100">(string "Hex or base64")</label>
         <div>
-          <textarea id="hex"
-                    name="hex"
+          <textarea id="user-input"
+                    name="user-input"
                     type_="text"
                     autoFocus=true
                     className="mt-1 outline-0 ring-1 ring-gray-900 focus-visible:ring-gray-700 rounded-xl p-2 w-full min-h-52"
