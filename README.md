@@ -3,8 +3,10 @@
 </p>
 
 # Overview
-txlab is a user-friendly interface for bitcoin transactions exploration and analysis.
-It uses bindings to [bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib) via [melange-bitcoin-lib](https://github.com/0x6A6471/melange-bitcoin-lib)
+txlab is a user-friendly interface for Bitcoin transaction exploration and analysis. It provides access to [bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib) functionality through [melange-bitcoin-lib](https://github.com/0x6A6471/melange-bitcoin-lib) bindings.
+
+> [!WARNING]
+> ⚠️ txlab is a work in progress.
 
 # Features
 
