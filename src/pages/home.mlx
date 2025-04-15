@@ -1,8 +1,8 @@
 open React
 open Melange_bitcoin_lib
-open Utils
 
 open Components
+open Utils
 
 type input = Psbt.psbt_tx_input
 type ouput = Psbt.psbt_tx_output
