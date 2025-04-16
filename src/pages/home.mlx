@@ -1,120 +1,16 @@
 open React
-open Melange_bitcoin_lib
 
-open Components
-open Utils
-
-type input = Psbt.psbt_tx_input
-type ouput = Psbt.psbt_tx_output
-type 'a global_psbt = 'a Bip174.t
-
-type 'a psbt =
-  { global_psbt : 'a global_psbt option
-  ; inputs : input array
-  ; outputs : ouput array
-  }
-
-type 'a action =
-  | Set_user_input of string
-  | Set_psbt of 'a psbt
-  | Set_error of string option
-
-type 'a state =
-  { user_input : string
-  ; psbt : 'a psbt
-  ; error : string option
-  }
-
-let reducer state = function
-  | Set_user_input user_input -> { state with user_input }
-  | Set_psbt psbt -> { state with psbt }
-  | Set_error error -> { state with error }
-;;
+open Ui
 
 let[@react.component] make () =
-  let display = useContext Ctx.Display.display_context in
-  let state, dispatch =
-    useReducer
-      reducer
-      { user_input = ""
-      ; psbt = { global_psbt = None; inputs = [||]; outputs = [||] }
-      ; error = None
-      }
-  in
-
-  let parse_user_input () =
-    let process_psbt psbt =
-      let inputs = Psbt.getTxInputs psbt in
-      let outputs = Psbt.getTxOutputs psbt in
-      dispatch (Set_psbt { inputs; outputs; global_psbt = Some psbt })
-    in
-    try
-      let psbt_opts = { Types.Psbt.network = Some display.network; maximum_fee_rate = None } in
-      match state.user_input with
-      | hex when Validators.is_hex hex -> Psbt.fromHex hex ~psbt_opts () |> process_psbt
-      | b64 when Validators.is_base64_psbt b64 -> Psbt.fromBase64 b64 ~psbt_opts () |> process_psbt
-      | _ -> dispatch (Set_error (Some "Not a valid hex or base64 string"))
-    with
-    | exn ->
-      let error_message = Printexc.to_string exn in
-      Js.log2 "Error parsing user_input: " error_message;
-      dispatch (Set_error (Some "Invalid input. Not a valid hex or base64 string"))
-  in
-
-  useEffect1
-    (fun () ->
-      match state.psbt.outputs with
-      | [||] -> None
-      | _ ->
-        parse_user_input ();
-        None)
-    [| display.network |];
-  let handle_input_change event =
-    if state.error <> None then dispatch (Set_error None);
-    if state.psbt.outputs <> [||]
-    then dispatch (Set_psbt { global_psbt = None; outputs = [||]; inputs = [||] });
-
-    let value = (Event.Form.target event)##value in
-    dispatch (Set_user_input value)
-  in
-
-  let handle_submit e =
-    Event.Form.preventDefault e;
-    match state.user_input with
-    | "" -> dispatch (Set_error (Some "Enter a transaction hex or base64 string"))
-    | _ -> parse_user_input ()
-  in
-
-  <div className="space-y-16 w-full">
-    <div className="flex items-center justify-between py-2">
-      <img src="/logo.svg" className="pointer-events-none select-none" /> <Ui.Switch />
-    </div>
-    <form onSubmit=handle_submit>
-      <div>
-        <label htmlFor="user-input" className="text-gray-100">(string "Hex or base64")</label>
-        <div>
-          <textarea id="user-input"
-                    name="user-input"
-                    type_="text"
-                    autoFocus=true
-                    className="mt-1 outline-0 ring-1 ring-gray-900 focus-visible:ring-gray-700 rounded-xl p-2 w-full min-h-52"
-                    onChange=handle_input_change />
-        </div>
-      </div>
-      <div className="mt-2 flex justify-between items-center">
-        (match state.error with
-         | None -> <div />
-         | Some error ->
-           <div className="inline-flex items-center gap-x-2  text-sm text-error">
-             <Ui.Icon name="alert-triangle" /> (string error)
-           </div>)
-        <button type_="submit"
-                className="rounded-full bg-gray-400 px-3 py-1.5 text-sm font-medium text-gray-950 shadow-sm hover:bg-gray-300 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-gray-400">
-          (string "Submit")
-        </button>
-      </div>
-    </form>
-    <Inputs global_psbt=state.psbt.global_psbt inputs=state.psbt.inputs />
-    <Outputs outputs=state.psbt.outputs />
+  <div className="space-y-4">
+    <p>(string "Why are you here? There's nothing here yet.")</p>
+    <p>
+      (string "How about you go mess around with ")
+      <Link href="/psbt" className="text-candle/90 hover:underline hover:underline-offset-2">
+        (string "PSBTs")
+      </Link>
+      (string " instead.")
+    </p>
   </div>
 ;;

@@ -13,4 +13,4 @@
   utils)
  (preprocess
   (pps melange.ppx reason-react-ppx))
- (modules home))
+ (modules home psbt))

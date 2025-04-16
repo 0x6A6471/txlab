@@ -8,5 +8,4 @@
   ; local
   ui)
  (preprocess
-  (pps melange.ppx reason-react-ppx))
- (modules layout))
+  (pps melange.ppx reason-react-ppx)))
