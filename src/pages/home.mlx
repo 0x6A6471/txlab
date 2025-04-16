@@ -6,11 +6,26 @@ let[@react.component] make () =
   <div className="space-y-4">
     <p>(string "Why are you here? There's nothing here yet.")</p>
     <p>
-      (string "How about you go mess around with ")
+      (string "How about you go ")
       <Link href="/psbt" className="text-candle/90 hover:underline hover:underline-offset-2">
-        (string "PSBTs")
+        (string "mess around with PSBTs")
       </Link>
-      (string " instead.")
+      (string ".")
+    </p>
+    <p>
+      (string "Or go check out ")
+      <a href="https://ocaml.org"
+         className="inline-flex items-center gap-x-1 text-[#F29100] hover:underline hover:underline-offset-2">
+        (string "OCaml") <Icon name="ocaml" size="16" />
+      </a>
+    </p>
+    <p>
+      (string "Fine, just go ")
+      <a href="https://terminal.onrampbitcoin.com"
+         className="text-mint hover:underline hover:underline-offset-2">
+        (string "look at some charts")
+      </a>
+      (string ".")
     </p>
   </div>
 ;;
