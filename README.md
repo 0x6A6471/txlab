@@ -2,21 +2,21 @@
   <img src="public/logo.svg?sanitize=true" alt="txlab logo" width="200">
 </p>
 
-# Overview
+## Overview
 
 txlab is a user-friendly interface for Bitcoin transaction exploration and analysis. It provides access to [bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib) functionality through [melange-bitcoin-lib](https://github.com/0x6A6471/melange-bitcoin-lib) bindings.
 
 > [!WARNING]
 > txlab is a work in progress.
 
-# Features
+## Features
 
-## PSBT (Partially Signed Bitcoin Transaction)
+### PSBT (Partially Signed Bitcoin Transaction)
 
 - [x] Parse from hex format
 - [x] Parse from base64 format
 
-## Network support
+### Network support
 
 - [x] Mainnet
 - [x] Testnet
@@ -37,7 +37,7 @@ This project is inspired by the following open-source projects:
 - [Bitcoin Design](https://bitcoin.design) for the icons and bitcoin design standards
 - [Radix](https://www.radix-ui.com/primitives) for the components via [melange-radix-ui](https://github.com/0x6A6471/melange-radix-ui) bindings
 
-# Roadmap
+## Roadmap
 
 - PSBT
 - Transactions
