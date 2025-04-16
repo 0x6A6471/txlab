@@ -94,6 +94,7 @@ let[@react.component] make () =
                     name="user-input"
                     type_="text"
                     autoFocus=true
+                    spellCheck=false
                     className="mt-1 outline-0 ring-1 ring-gray-900 focus-visible:ring-gray-700 rounded-xl p-2 w-full min-h-52"
                     onChange=handle_input_change />
         </div>
