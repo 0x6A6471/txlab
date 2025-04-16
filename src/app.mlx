@@ -9,6 +9,7 @@ let[@react.component] make () =
     <Shared.Layout>
       (match url.path with
        | [] -> <Pages.Home />
+       | [ "psbt" ] -> <Pages.Psbt />
        | _ -> <h1>(string "404")</h1>)
     </Shared.Layout>
   </DisplayProvider>

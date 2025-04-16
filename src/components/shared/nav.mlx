@@ -1,0 +1,32 @@
+open React
+
+open Ui
+
+let[@react.component] make () =
+  let url = ReasonReactRouter.useUrl () in
+  let active =
+    match url.path with
+    | "psbt" :: _ -> true
+    | _ -> false
+  in
+  let active_class = if active then "text-gray-200" else "text-gray-600 hover:text-gray-200" in
+  <nav className="flex items-center justify-between py-2">
+    <Link href="/"><img src="/logo.svg" className="pointer-events-none select-none" /></Link>
+    <div className="flex items-center gap-x-4 sm:gap-x-8">
+      <div className="relative">
+        <Link href="/psbt" className=active_class>(string "PSBT")</Link>
+        (match active with
+         | true ->
+           <div className="absolute h-1 w-1 rounded-full bg-mint -bottom-2 left-1/2 transform -translate-x-1/2" />
+         | false -> null)
+      </div>
+      <p className="gap-x-1 text-gray-600 cursor-not-allowed hidden sm:inline-flex">
+        (string "Trasaction") <Badge label="Soon" variant=`secondary />
+      </p>
+      <p className="gap-x-1 text-gray-600 cursor-not-allowed hidden sm:inline-flex">
+        (string "Payment") <Badge label="Soon" variant=`secondary />
+      </p>
+      <Switch />
+    </div>
+  </nav>
+;;

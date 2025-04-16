@@ -12,4 +12,4 @@
   utils)
  (preprocess
   (pps melange.ppx reason-react-ppx))
- (modules badge icon script_text switch tooltip))
+ (modules badge icon link script_text switch tooltip))

@@ -1,25 +1,31 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+    <link href="/src/styles.css" rel="stylesheet" />
 
-  <link href="/src/styles.css" rel="stylesheet">
+    <title>BTC Lab</title>
+  </head>
 
-  <title>BTC Lab</title>
-</head>
-
-<body class="font-sans bg-black text-gray-300 selection:text-gray-950 selection:bg-gray-50 max-w-screen-lg mx-auto text-sm px-4 xl:px-0">
-  <div id="root"></div>
+  <body
+    class="font-sans bg-black text-gray-300 selection:text-gray-950 selection:bg-gray-50 max-w-screen-lg mx-auto text-sm px-4 xl:px-0"
+  >
+    <div id="root"></div>
     <!-- This path is relative to the _build/default directory  -->
-    <script type="module" src="./_build/default/src/output/src/main.js"></script>
-</body>
-
+    <script
+      type="module"
+      src="./_build/default/src/output/src/main.js"
+    ></script>
+  </body>
 </html>
-
