@@ -77,7 +77,7 @@ let[@react.component] make () =
     if state.psbt.outputs <> [||]
     then dispatch (Set_psbt { global_psbt = None; outputs = [||]; inputs = [||] });
 
-    let value = (Event.Form.target event)##value in
+    let value = (Event.Form.target event)##value |> String.trim in
     dispatch (Set_user_input value)
   in
 
