@@ -7,8 +7,8 @@ let[@react.component] make ~label ?(variant = `primary) =
     | `secondary -> "bg-inherit ring-gray-700 text-gray-600"
   in
   <span className=(styles
-                   ^ " inline-flex items-center rounded-full px-1.5 py-0.5 \
-                      font-medium ring-1 ring-inset text-xs")>
+                   ^ " inline-flex items-center rounded-full px-1.5 py-0.5 font-medium ring-1 ring-inset text-xs w-fit"
+                  )>
     (string label)
   </span>
 ;;
