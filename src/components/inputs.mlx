@@ -60,7 +60,7 @@ let[@react.component] make ~global_psbt ~inputs =
                                 <p className="text-xs">(string "witness script")</p>
                               </div>
                             </div>
-                            <div className="space-y-1">
+                            <div className="space-y-1 flex flex-col">
                               (split
                                |> Array.of_list
                                |> Array.map (fun text -> <Script_text key=text text />)
