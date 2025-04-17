@@ -20,7 +20,7 @@
 ;  (package (name melange-bitcoin-lib)))
 ;; production
 (pin
- (url "git+https://github.com/0x6A6471/melange-bitcion-lib")
+ (url "git+https://github.com/0x6A6471/melange-bitcoin-lib")
  (package (name melange-bitcoin-lib)))
 
 ; radix-ui
