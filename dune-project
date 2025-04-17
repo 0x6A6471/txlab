@@ -14,15 +14,23 @@
 (using melange 0.1)
 
 ; bitcoin-lib
-; TODO: update once melange-bitcoin-lib is published
+;; dev
+; (pin
+;  (url "../melange-bitcoin-lib")
+;  (package (name melange-bitcoin-lib)))
+;; production
 (pin
- (url "../melange-bitcoin-lib")
+ (url "git+https://github.com/0x6A6471/melange-bitcoin-lib")
  (package (name melange-bitcoin-lib)))
 
 ; radix-ui
-; TODO: update once melange-radix-ui is published
+;; dev
+; (pin
+;  (url "../melange-radix-ui")
+;  (package (name melange-radix-ui)))
+;; production
 (pin
- (url "../melange-radix-ui")
+ (url "git+https://github.com/0x6A6471/melange-radix-ui")
  (package (name melange-radix-ui)))
 
 ; mlx files
