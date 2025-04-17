@@ -10,6 +10,7 @@
   ; local
   ctx
   components
+  hooks
   utils)
  (preprocess
   (pps melange.ppx reason-react-ppx))

@@ -1,0 +1,10 @@
+(library
+ (name hooks)
+ (modes melange)
+ (libraries
+  ; react
+  reason-react
+  melange.belt)
+ (preprocess
+  (pps melange.ppx reason-react-ppx))
+ (modules use_metadata))

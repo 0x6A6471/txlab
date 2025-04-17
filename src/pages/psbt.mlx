@@ -2,7 +2,17 @@ open React
 open Melange_bitcoin_lib
 
 open Components
+open Hooks
 open Utils
+
+(* let _ = *)
+(*   [%mel.raw {| *)
+(*   window.setDocumentTitle = function(title) { *)
+(*     document.title = title; *)
+(*   } *)
+(* |}] *)
+(* ;; *)
+(* external set_document_title : string -> unit = "setDocumentTitle" *)
 
 type input = Psbt.psbt_tx_input
 type ouput = Psbt.psbt_tx_output
@@ -41,6 +51,8 @@ let[@react.component] make () =
       ; error = None
       }
   in
+
+  Use_metadata.use_document_title "psbt | txlab";
 
   let parse_user_input () =
     let process_psbt psbt =
