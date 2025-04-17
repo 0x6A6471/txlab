@@ -1,0 +1,16 @@
+let _ =
+  [%mel.raw {|
+  window.setDocumentTitle = function(title) {
+    document.title = title;
+  }
+|}]
+;;
+external set_document_title' : string -> unit = "setDocumentTitle"
+
+let set_document_title title =
+  React.useEffect1
+    (fun () ->
+      set_document_title' title;
+      None)
+    [| title |]
+;;
