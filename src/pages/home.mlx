@@ -4,7 +4,7 @@ open Hooks
 open Ui
 
 let[@react.component] make () =
-  Use_metadata.use_document_title "txlab";
+  Use_metadata.set_document_title "txlab";
 
   <div className="space-y-4">
     <p>(string "Why are you here? There's nothing here yet.")</p>

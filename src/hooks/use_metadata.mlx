@@ -5,12 +5,12 @@ let _ =
   }
 |}]
 ;;
-external set_document_title : string -> unit = "setDocumentTitle"
+external set_document_title' : string -> unit = "setDocumentTitle"
 
-let use_document_title title =
+let set_document_title title =
   React.useEffect1
     (fun () ->
-      set_document_title title;
+      set_document_title' title;
       None)
     [| title |]
 ;;

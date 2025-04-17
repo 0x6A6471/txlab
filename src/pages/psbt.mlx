@@ -5,15 +5,6 @@ open Components
 open Hooks
 open Utils
 
-(* let _ = *)
-(*   [%mel.raw {| *)
-(*   window.setDocumentTitle = function(title) { *)
-(*     document.title = title; *)
-(*   } *)
-(* |}] *)
-(* ;; *)
-(* external set_document_title : string -> unit = "setDocumentTitle" *)
-
 type input = Psbt.psbt_tx_input
 type ouput = Psbt.psbt_tx_output
 type 'a global_psbt = 'a Bip174.t
@@ -52,7 +43,7 @@ let[@react.component] make () =
       }
   in
 
-  Use_metadata.use_document_title "psbt | txlab";
+  Use_metadata.set_document_title "psbt | txlab";
 
   let parse_user_input () =
     let process_psbt psbt =
