@@ -2,6 +2,12 @@
   <img src="public/logo.svg?sanitize=true" alt="txlab logo" width="200">
 </p>
 
+<p align="center">
+  <a href="https://github.com/0x6A6471/txlab/actions">
+    <img src="https://github.com/0x6A6471/txlab/actions/workflows/deploy.yml/badge.svg" alt="Deployment status">
+  </a>
+</p>
+
 ## Overview
 
 txlab is a user-friendly interface for Bitcoin transaction exploration and analysis. It provides access to [bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib) functionality through [melange-bitcoin-lib](https://github.com/0x6A6471/melange-bitcoin-lib) bindings.
