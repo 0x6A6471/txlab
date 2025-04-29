@@ -14,24 +14,24 @@
 (using melange 0.1)
 
 ; bitcoin-lib
-;; dev
-; (pin
-;  (url "../melange-bitcoin-lib")
-;  (package (name melange-bitcoin-lib)))
-;; production
+; dev
 (pin
- (url "git+https://github.com/0x6A6471/melange-bitcoin-lib")
+ (url "../melange-bitcoin-lib")
  (package (name melange-bitcoin-lib)))
+; production
+; (pin
+;  (url "git+https://github.com/0x6A6471/melange-bitcoin-lib")
+;  (package (name melange-bitcoin-lib)))
 
 ; radix-ui
-;; dev
-; (pin
-;  (url "../melange-radix-ui")
-;  (package (name melange-radix-ui)))
-;; production
+; dev
 (pin
- (url "git+https://github.com/0x6A6471/melange-radix-ui")
+ (url "../melange-radix-ui")
  (package (name melange-radix-ui)))
+; production
+; (pin
+;  (url "git+https://github.com/0x6A6471/melange-radix-ui")
+;  (package (name melange-radix-ui)))
 
 ; mlx files
 (dialect
