@@ -46,10 +46,7 @@ let[@react.component] make ~inputs =
                    <dt>(string "Script")</dt>
                    <dd className="sm:col-span-3 space-y-6">
                      <div className="flex flex-col md:flex-row justify-between md:items-center">
-                       <div className="flex items-center space-x-1">
-                         <Ui.Badge label=script_type />
-                         <p className="text-xs">(string "TODO: figure out witness script")</p>
-                       </div>
+                       <Ui.Badge label=script_type />
                      </div>
                      <div className="space-y-1 flex flex-col">
                        (match Ops.input_of_script_type input = "Coinbase" with
