@@ -1,0 +1,94 @@
+open React
+open Melange_bitcoin_lib
+open Transactions
+
+open Hooks
+
+type t = Melange_bitcoin_lib.Transaction.t
+
+type action =
+  | Set_hex of string
+  | Set_transaction of t
+  | Set_error of string option
+
+type state =
+  { hex : string
+  ; transaction : t
+  ; error : string option
+  }
+
+let reducer state = function
+  | Set_hex hex -> { state with hex }
+  | Set_transaction transaction -> { state with transaction }
+  | Set_error error -> { state with error }
+;;
+
+let[@react.component] make () =
+  let state, dispatch =
+    useReducer
+      reducer
+      { hex = ""
+      ; transaction = { version = 1; locktime = 0; ins = [||]; outs = [||] }
+      ; error = None
+      }
+  in
+
+  Use_metadata.set_document_title "transaction | txlab";
+
+  let parse_hex () =
+    try
+      let txn = Transaction.fromHex state.hex in
+      let id = Transaction.getId txn in
+      Js.log2 "txn" id;
+      dispatch (Set_transaction txn)
+    with
+    | exn ->
+      let error_message = Printexc.to_string exn in
+      Js.log2 "Error parsing hex: " error_message;
+      dispatch (Set_error (Some "Invalid input. Not a valid transaction hex"))
+  in
+
+  let handle_input_change event =
+    if state.error <> None then dispatch (Set_error None);
+    let value = (Event.Form.target event)##value |> String.trim in
+    dispatch (Set_hex value)
+  in
+
+  let handle_submit e =
+    Event.Form.preventDefault e;
+    match state.hex with
+    | "" -> dispatch (Set_error (Some "Transaction hex is required"))
+    | _ -> parse_hex ()
+  in
+
+  <div className="space-y-16 w-full">
+    <form onSubmit=handle_submit>
+      <div>
+        <label htmlFor="user-input" className="text-gray-100">(string "Transaction hex")</label>
+        <div>
+          <textarea id="user-input"
+                    name="user-input"
+                    type_="text"
+                    autoFocus=true
+                    spellCheck=false
+                    className="mt-1 outline-0 ring-1 ring-gray-900 focus-visible:ring-gray-700 rounded-xl p-2 w-full min-h-52"
+                    onChange=handle_input_change />
+        </div>
+      </div>
+      <div className="mt-2 flex justify-between items-center">
+        (match state.error with
+         | None -> <div />
+         | Some error ->
+           <div className="inline-flex items-center gap-x-2  text-sm text-error">
+             <Ui.Icon name="alert-triangle" /> (string error)
+           </div>)
+        <button type_="submit"
+                className="rounded-full bg-gray-400 px-3 py-1.5 text-sm font-medium text-gray-950 shadow-sm hover:bg-gray-300 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-gray-400">
+          (string "Submit")
+        </button>
+      </div>
+    </form>
+    <Inputs inputs=state.transaction.ins />
+    (* <Outputs outputs=state.psbt.outputs /> *)
+  </div>
+;;

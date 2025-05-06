@@ -1,18 +1,12 @@
 (library
- (name pages)
+ (name transactions)
  (modes melange)
  (libraries
   ; react
   reason-react
   melange.belt
-  ; third-party
-  melange-bitcoin-lib
   ; local
-  ctx
-  components
-  transactions
-  hooks
-  utils)
+  ui)
  (preprocess
   (pps melange.ppx reason-react-ppx))
- (modules home psbt transaction))
+ (modules inputs))

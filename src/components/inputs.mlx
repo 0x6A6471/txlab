@@ -20,7 +20,7 @@ let[@react.component] make ~global_psbt ~inputs =
       <ul className="space-y-4">
         (Array.mapi
            (fun index (input : input) ->
-             let txid = Converters.txid_of_uint8Array input.hash in
+             let txid = Converters.hex_of_buffer_rev input.hash in
              <li key=(string_of_int index) className="rounded-xl bg-gray-950 flex flex-col">
                <div className="border-b border-gray-900/50 p-4">
                  <h3 className="text-candle">(string @@ "inputs[" ^ string_of_int index ^ "]")</h3>
